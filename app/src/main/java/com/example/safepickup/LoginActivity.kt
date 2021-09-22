@@ -2,6 +2,7 @@ package com.example.safepickup
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -111,15 +112,12 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, loginRespond?.message.toString(), Toast.LENGTH_SHORT).show()
 
                 if (loginRespond?.data?.userId?.isEmpty() == false) {
-                    val sharedPreferences: SharedPreferences = this@LoginActivity.getSharedPreferences(getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.putString("user_id", loginRespond?.data?.userId.toString())
-                    editor.putString("credential", loginRespond?.data?.credential.toString())
-                    editor.commit()
-
-                    if (loginRespond?.data?.emptyFaceId == true){
+                    Utilities.setSafePref(this@LoginActivity, loginRespond?.data?.userId.toString(), loginRespond?.data?.credential.toString())
+                    if (loginRespond?.data?.emptyFaceId == true) {
+                        startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
                     }
-                    else{
+                    else {
+                        startActivity(Utilities.intent_mainActivity(this@LoginActivity))
                     }
                 }
             }
@@ -127,27 +125,30 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun authorized(user_id: String, credential: String){
+        val progressDialog = ProgressDialog.show(this@LoginActivity, "",
+                "Loading. Please wait...", true)
         val call: Call<CheckCredentialRespond?>? = service.checkCredential(user_id, credential)
 
         call?.enqueue(object : Callback<CheckCredentialRespond?> {
             override fun onResponse(call: Call<CheckCredentialRespond?>, response: Response<CheckCredentialRespond?>) {
+                progressDialog.dismiss()
                 val credentialRespond: CheckCredentialRespond? = response.body()
 
-                if(credentialRespond?.authorized != true){
-                    val sharedPreferences: SharedPreferences = this@LoginActivity.getSharedPreferences(getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.clear()
-                    editor.commit()
-                    Toast.makeText(applicationContext, "clear pref", Toast.LENGTH_SHORT).show()
-                }
-                else{
-
+                if (credentialRespond?.authorized != true) {
+                    Utilities.logout(this@LoginActivity)
+                } else {
+                    if (credentialRespond?.emptyFaceId == true) {
+                        startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
+                    } else {
+                        startActivity(Utilities.intent_mainActivity(this@LoginActivity))
+                    }
                 }
                 Log.i("Retrofit", "succss " + credentialRespond?.message.toString())
                 Toast.makeText(applicationContext, credentialRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<CheckCredentialRespond?>, t: Throwable) {
+                progressDialog.dismiss()
                 Log.d("Retrofit", t.message.toString())
                 Toast.makeText(applicationContext, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }

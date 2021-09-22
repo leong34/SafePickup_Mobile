@@ -6,17 +6,17 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("jsonschema2pojo")
-public class CheckCredentialRespond {
+public class InsertImageRespond {
 
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("image")
+    @Expose
+    private String image;
     @SerializedName("authorized")
     @Expose
     private Boolean authorized;
-    @SerializedName("empty_face_id")
-    @Expose
-    private Boolean emptyFaceId;
 
     public String getMessage() {
         return message;
@@ -26,20 +26,20 @@ public class CheckCredentialRespond {
         this.message = message;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public Boolean getAuthorized() {
         return authorized;
     }
 
     public void setAuthorized(Boolean authorized) {
         this.authorized = authorized;
-    }
-
-    public Boolean getEmptyFaceId() {
-        return emptyFaceId;
-    }
-
-    public void setEmptyFaceId(Boolean emptyFaceId) {
-        this.emptyFaceId = emptyFaceId;
     }
 
 }
