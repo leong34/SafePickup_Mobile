@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="grey">#FAFAFA</color>
+    <color name="deep_grey">#919090</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF9800</color>
+    <color name="login_form">#393737</color>
+    <color name="login_button">#9446D8</color>
 </resources>
