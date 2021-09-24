@@ -17,9 +17,9 @@ public class Data {
     @SerializedName("organization_id")
     @Expose
     private String organizationId;
-    @SerializedName("emptyFaceId")
+    @SerializedName("face_id")
     @Expose
-    private Boolean emptyFaceId;
+    private String faceId;
 
     public String getUserId() {
         return userId;
@@ -45,12 +45,12 @@ public class Data {
         this.organizationId = organizationId;
     }
 
-    public Boolean getEmptyFaceId() {
-        return emptyFaceId;
+    public String getFaceId() {
+        return faceId;
     }
 
-    public void setEmptyFaceId(Boolean emptyFaceId) {
-        this.emptyFaceId = emptyFaceId;
+    public void setFaceId(String faceId) {
+        this.faceId = faceId;
     }
 
 }

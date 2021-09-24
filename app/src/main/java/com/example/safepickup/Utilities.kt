@@ -21,11 +21,21 @@ class Utilities {
         }
 
         @JvmStatic
-        fun setSafePref(context: Context, user_id: String, credential: String){
+        fun setSafePref(context: Context, user_id: String, credential: String, faceId: String, organizationId: String){
             val sharedPreferences: SharedPreferences = context.getSharedPreferences(context.getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.putString("user_id", user_id)
             editor.putString("credential", credential)
+            editor.putString("face_id", faceId)
+            editor.putString("organization_id", organizationId)
+            editor.commit()
+        }
+
+        @JvmStatic
+        fun setFaceId(context: Context, faceId: String){
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences(context.getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putString("face_id", faceId)
             editor.commit()
         }
 

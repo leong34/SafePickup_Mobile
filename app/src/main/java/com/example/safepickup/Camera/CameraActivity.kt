@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,8 +19,10 @@ import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.InsertImageRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
+import com.google.gson.GsonBuilder
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,19 +33,31 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class CameraActivity : AppCompatActivity() {
     private val pic_id = 123
 
     // Define the button and imageview type variable
-    lateinit var camera_open_id: Button
+    lateinit var camera_open_id: ImageView
     lateinit var click_image_id: ImageView
     lateinit var currentPhotoPath: String
+    lateinit var iv_confirm_image: ImageView
+
+    var gson = GsonBuilder()
+            .setLenient()
+            .create()
+
+    val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .build()
 
     val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.1.7")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
             .build()
 
     val service = retrofit.create(API::class.java)
@@ -51,12 +65,19 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+        supportActionBar?.hide()
 
         camera_open_id = findViewById(R.id.camera_button)
         click_image_id = findViewById(R.id.click_image)
+        iv_confirm_image = findViewById(R.id.iv_confirm_image)
 
         camera_open_id.setOnClickListener { // Create the camera_intent ACTION_IMAGE_CAPTURE
             dispatchTakePictureIntent()
+        }
+
+        iv_confirm_image.setOnClickListener {
+            val file = File(currentPhotoPath)
+            uploadImage(file.name, Uri.fromFile(file))
         }
 
     }
@@ -67,14 +88,14 @@ class CameraActivity : AppCompatActivity() {
             if(resultCode == Activity.RESULT_OK){
                 val file = File(currentPhotoPath)
                 click_image_id.setImageURI(Uri.fromFile(file))
+                click_image_id.visibility = View.VISIBLE
+                iv_confirm_image.visibility = View.VISIBLE
                 Log.i("IMG URI", Uri.fromFile(file).toString())
 
                 Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
                     mediaScanIntent.data = Uri.fromFile(file)
                     sendBroadcast(mediaScanIntent)
                 }
-
-                uploadImage(file.name, Uri.fromFile(file))
             }
         }
     }
@@ -104,10 +125,16 @@ class CameraActivity : AppCompatActivity() {
                 val insertImageRespond: InsertImageRespond? = response.body()
 
                 if (insertImageRespond?.authorized == true) {
+                    Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
                     Log.d("Retrofit", insertImageRespond?.message.toString())
-                    Toast.makeText(applicationContext, "Succss " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
-                    startActivity(Utilities.intent_mainActivity(this@CameraActivity))
-                    finish()
+
+                    if (!insertImageRespond?.faceId.toString().isEmpty()) {
+                        Toast.makeText(applicationContext, "Succss " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
+                        startActivity(Utilities.intent_mainActivity(this@CameraActivity))
+                        finish()
+                    } else {
+                        Toast.makeText(applicationContext, "Please try again, " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
+                    }
                 } else {
                     Toast.makeText(applicationContext, "Caution " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
                 }
@@ -116,7 +143,7 @@ class CameraActivity : AppCompatActivity() {
             override fun onFailure(call: Call<InsertImageRespond?>, t: Throwable) {
                 progressDialog.dismiss()
                 Log.d("Retrofit", t.message.toString())
-                Toast.makeText(applicationContext, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Please try again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

@@ -19,11 +19,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.CheckCredentialRespond
 import com.example.safepickup.Model.LoginRespond
+import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 class LoginActivity : AppCompatActivity() {
@@ -32,9 +35,20 @@ class LoginActivity : AppCompatActivity() {
     lateinit var et_loginPassword:EditText
     lateinit var iv_PasswordVisibility: ImageView
     lateinit var btn_login:Button
+
+    var gson = GsonBuilder()
+            .setLenient()
+            .create()
+
+    val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .build()
+
     val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.1.7")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
             .build()
 
     val service = retrofit.create(API::class.java)
@@ -84,14 +98,16 @@ class LoginActivity : AppCompatActivity() {
         btn_login?.setOnClickListener{
             Log.i(TAG, et_loginEmail?.text.toString())
             Log.i(TAG, et_loginPassword?.text.toString())
-            urlEncoded(et_loginEmail?.text.toString(), et_loginPassword?.text.toString())
+            loggingIn(et_loginEmail?.text.toString(), et_loginPassword?.text.toString())
         }
 
-        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
-        checkFieldsForEmptyValues()
+        startActivity(Utilities.intent_mainActivity(this))
+//        Uncomment this
+//        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
+//        checkFieldsForEmptyValues()
     }
 
-    fun urlEncoded(email: String, password: String) {
+    fun loggingIn(email: String, password: String) {
         val progressDialog = ProgressDialog.show(this@LoginActivity, "",
                 "Loading. Please wait...", true)
 
@@ -112,8 +128,8 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, loginRespond?.message.toString(), Toast.LENGTH_SHORT).show()
 
                 if (loginRespond?.data?.userId?.isEmpty() == false) {
-                    Utilities.setSafePref(this@LoginActivity, loginRespond?.data?.userId.toString(), loginRespond?.data?.credential.toString())
-                    if (loginRespond?.data?.emptyFaceId == true) {
+                    Utilities.setSafePref(this@LoginActivity, loginRespond?.data?.userId.toString(), loginRespond?.data?.credential.toString(), loginRespond?.data?.faceId.toString(), loginRespond?.data?.organizationId.toString())
+                    if (loginRespond?.data?.faceId!!.isEmpty()) {
                         startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
                     }
                     else {

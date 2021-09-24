@@ -17,6 +17,12 @@ public class InsertImageRespond {
     @SerializedName("authorized")
     @Expose
     private Boolean authorized;
+    @SerializedName("rekog_message")
+    @Expose
+    private String rekogMessage;
+    @SerializedName("face_id")
+    @Expose
+    private String faceId;
 
     public String getMessage() {
         return message;
@@ -40,6 +46,22 @@ public class InsertImageRespond {
 
     public void setAuthorized(Boolean authorized) {
         this.authorized = authorized;
+    }
+
+    public String getRekogMessage() {
+        return rekogMessage;
+    }
+
+    public void setRekogMessage(String rekogMessage) {
+        this.rekogMessage = rekogMessage;
+    }
+
+    public String getFaceId() {
+        return faceId;
+    }
+
+    public void setFaceId(String faceId) {
+        this.faceId = faceId;
     }
 
 }

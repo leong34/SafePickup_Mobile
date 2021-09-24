@@ -16,8 +16,8 @@ class CameraFragment : Fragment() {
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         cameraViewModel = ViewModelProvider(this).get(CameraViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_camera, container, false)
-        val textView = root.findViewById<TextView?>(R.id.text_camera)
-        cameraViewModel?.getText()?.observe(viewLifecycleOwner, Observer { s -> textView?.setText(s) })
+//        val textView = root.findViewById<TextView?>(R.id.text_camera)
+//        cameraViewModel?.getText()?.observe(viewLifecycleOwner, Observer { s -> textView?.setText(s) })
         return root
     }
 }
