@@ -3,8 +3,9 @@ package com.example.safepickup
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
+import com.example.safepickup.Activity.LoginActivity
+import com.example.safepickup.Activity.MainActivity
 import com.example.safepickup.Camera.CameraActivity
 
 class Utilities {
@@ -29,6 +30,12 @@ class Utilities {
             editor.putString("face_id", faceId)
             editor.putString("organization_id", organizationId)
             editor.commit()
+        }
+
+        @JvmStatic
+        fun getSafePref(context: Context, key: String): String {
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences(context.getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
+            return sharedPreferences.getString(key, "VALUE_MISSING").toString()
         }
 
         @JvmStatic

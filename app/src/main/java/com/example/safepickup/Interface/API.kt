@@ -1,8 +1,6 @@
 package com.example.safepickup.Interface
 
-import com.example.safepickup.Model.CheckCredentialRespond
-import com.example.safepickup.Model.InsertImageRespond
-import com.example.safepickup.Model.LoginRespond
+import com.example.safepickup.Model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -30,5 +28,18 @@ interface API {
                     @Part("credential") credential: RequestBody,
                     @Part image: MultipartBody.Part): Call<InsertImageRespond?>?
 
+    @FormUrlEncoded
+    @POST("/fyp_web/API/fetchNoticesList.php")
+    open fun fetchNotices(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+    ): Call<FetchNoticesListRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/fetchStudentsList.php")
+    open fun fetchStudents(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+    ): Call<FetchStudentsListRespond?>?
 
 }

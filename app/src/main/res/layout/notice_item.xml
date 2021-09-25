@@ -10,38 +10,31 @@
     app:cardCornerRadius="20dp"
     app:cardElevation="5dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/linearLayout7"
-        android:layout_margin="10dp"
         android:layout_width="250dp"
-        android:layout_height="125dp">
+        android:layout_height="125dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageView_notice"
             android:layout_width="250dp"
-            android:layout_height="125dp"
+            android:layout_height="105dp"
             android:contentDescription="Icon"
+            android:maxHeight="125dp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_news_removebg" />
 
         <TextView
             android:id="@+id/text_notice_description"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Notice 1"
             android:textColor="@color/deep_grey"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textStyle="bold" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

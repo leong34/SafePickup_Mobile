@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".Camera.CameraActivity"></activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activity.LoginActivity"
             android:label="@string/app_name"
             android:noHistory="true">
             <intent-filter>
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.account.Activity_Listview" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Activity.MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

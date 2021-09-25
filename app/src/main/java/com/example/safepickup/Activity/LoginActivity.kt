@@ -1,8 +1,7 @@
-package com.example.safepickup
+package com.example.safepickup.Activity
 
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -19,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.CheckCredentialRespond
 import com.example.safepickup.Model.LoginRespond
+import com.example.safepickup.R
+import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -103,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
 
         startActivity(Utilities.intent_mainActivity(this))
 //        Uncomment this
-//        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
+    //        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
 //        checkFieldsForEmptyValues()
     }
 

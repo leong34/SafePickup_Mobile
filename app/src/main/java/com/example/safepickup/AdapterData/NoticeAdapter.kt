@@ -1,4 +1,4 @@
-package com.example.safepickup.ui.dashboard
+package com.example.safepickup.AdapterData
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safepickup.R
 
-class NoticeAdapter(private val noticeData: Array<NoticeData?>?) : RecyclerView.Adapter<NoticeAdapter.ViewHolder?>() {
+class NoticeAdapter(private val noticeData: ArrayList<NoticeData>) : RecyclerView.Adapter<NoticeAdapter.ViewHolder?>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView?
@@ -32,7 +32,7 @@ class NoticeAdapter(private val noticeData: Array<NoticeData?>?) : RecyclerView.
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val myNoticeData = noticeData?.get(position)
-        holder.textView?.setText(noticeData?.get(position)?.getName())
+        holder.textView?.setText(noticeData?.get(position)?.getTitle())
         //holder.imageView.setImageResource(noticeData[position].getImage());
         holder.cardView?.setOnClickListener(View.OnClickListener { v -> Toast.makeText(v.context, "clicked $position", Toast.LENGTH_SHORT).show() })
     }

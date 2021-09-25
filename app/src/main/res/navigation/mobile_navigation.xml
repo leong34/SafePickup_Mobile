@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_camera"
-        android:name="com.example.safepickup.ui.notifications.NotificationsFragment"
-        android:label="@string/title_camera"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_location"
+        android:name="com.example.safepickup.ui.location.LocationFragment"
+        android:label="@string/title_location"
+        tools:layout="@layout/fragment_location" />
 </navigation>

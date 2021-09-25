@@ -115,20 +115,53 @@
                 android:layout_marginTop="25dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_students"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/student"
-                    android:textColor="@color/deep_grey"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_students"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/student"
+                        android:textColor="@color/deep_grey"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_checkIn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/ic_user_check_solid_25dp"
+                        app:srcCompat="@drawable/ic_user_check_solid_25dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_absent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/ic_user_times_solid_25dp"
+                        app:srcCompat="@drawable/ic_user_times_solid_25dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_request"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/ic_car_solid_25"
+                        app:srcCompat="@drawable/ic_car_solid_25" />
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_kid"
+                    android:id="@+id/recycler_student"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp" />
+                    android:layout_height="match_parent" />
             </LinearLayout>
 
         </LinearLayout>
