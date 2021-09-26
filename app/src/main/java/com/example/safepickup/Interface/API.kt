@@ -42,4 +42,28 @@ interface API {
             @Field("credential") credential: String,
     ): Call<FetchStudentsListRespond?>?
 
+    @FormUrlEncoded
+    @POST("/fyp_web/API/checkInStudents.php")
+    open fun checkInStudent(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+            @Field("student_ids[]") student_ids: ArrayList<String>,
+            @Field("encrypted_code") encrypted_code: String,
+    ): Call<BasicRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/checkAbsentStudents.php")
+    open fun checkAbsentStudent(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+            @Field("student_ids[]") student_ids: ArrayList<String>
+    ): Call<BasicRespond?>?
+
+    @Multipart
+    @POST("/fyp_web/API/requestPickUpStudents.php")
+    fun requestPickUpStudents(@Part("user_id") id: RequestBody,
+                              @Part("credential") credential: RequestBody,
+                              @Part("face_id") face_id: RequestBody,
+                              @Part("student_ids[]") student_ids: ArrayList<String>,
+                              @Part image: MultipartBody.Part): Call<RequestPickUpStudentsRespond?>?
 }

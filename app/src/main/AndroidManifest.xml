@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafePickup"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Camera.CameraActivity"></activity>
+        <activity android:name=".Activity.FaceScanActivity"></activity>
+        <activity android:name=".Activity.CheckInActivity"></activity>
+        <activity android:name=".Activity.CameraActivity" />
         <activity
             android:name=".Activity.LoginActivity"
             android:label="@string/app_name"
@@ -36,7 +38,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

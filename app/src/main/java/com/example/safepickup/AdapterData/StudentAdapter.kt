@@ -11,7 +11,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safepickup.R
-import com.google.android.material.button.MaterialButton
 
 class StudentAdapter(private val studentDataList: ArrayList<StudentData>): RecyclerView.Adapter<StudentAdapter.ViewHolder?>() {
     var context: Context? = null
@@ -31,6 +30,10 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>): Recyc
         }
     }
 
+    fun selectAll() {
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val studentItem = layoutInflater.inflate(R.layout.student_item, parent, false)
@@ -43,12 +46,12 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>): Recyc
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.text_kid_name?.text = studentDataList.get(position).full_name
         holder.text_kid_status?.text = studentDataList.get(position).attendance
-        holder.card_student?.setCardBackgroundColor( if(studentDataList.get(position).selected == true)
+        holder.card_student?.setCardBackgroundColor(if (studentDataList.get(position).selected == true)
             ContextCompat.getColor(context!!, R.color.cyan) else ContextCompat.getColor(context!!, R.color.light_grey))
 
         holder.itemView.setOnClickListener{
             studentDataList.get(position).selected = studentDataList.get(position).selected != true
-            holder.card_student?.setCardBackgroundColor( if(studentDataList.get(position).selected == true)
+            holder.card_student?.setCardBackgroundColor(if (studentDataList.get(position).selected == true)
                 ContextCompat.getColor(context!!, R.color.cyan) else ContextCompat.getColor(context!!, R.color.light_grey))
         }
 

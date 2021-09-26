@@ -1,9 +1,14 @@
 package com.example.safepickup.Activity
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
@@ -15,6 +20,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.CheckCredentialRespond
 import com.example.safepickup.Model.LoginRespond
@@ -75,12 +81,10 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
 
-        val sharedPreferences: SharedPreferences = getSharedPreferences(getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
-
-        et_loginEmail = findViewById(R.id.et_loginEmail)
-        et_loginPassword = findViewById(R.id.et_loginPassword)
-        iv_PasswordVisibility = findViewById(R.id.iv_PasswordVisibility)
-        btn_login = findViewById(R.id.btn_login)
+        et_loginEmail           = findViewById(R.id.et_loginEmail)
+        et_loginPassword        = findViewById(R.id.et_loginPassword)
+        iv_PasswordVisibility   = findViewById(R.id.iv_PasswordVisibility)
+        btn_login               = findViewById(R.id.btn_login)
 
         et_loginEmail.addTextChangedListener(mTextWatcher)
         et_loginPassword.addTextChangedListener(mTextWatcher)
@@ -101,10 +105,11 @@ class LoginActivity : AppCompatActivity() {
             Log.i(TAG, et_loginPassword?.text.toString())
             loggingIn(et_loginEmail?.text.toString(), et_loginPassword?.text.toString())
         }
+//        startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
 
         startActivity(Utilities.intent_mainActivity(this))
 //        Uncomment this
-    //        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
+//        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
 //        checkFieldsForEmptyValues()
     }
 

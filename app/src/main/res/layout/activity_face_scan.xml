@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".Activity.CameraActivity">
+    tools:context=".Activity.FaceScanActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout6"
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
-                android:text="Register Face ID"
+                android:text="Face Verfication"
                 android:textColor="@color/white"
                 android:textSize="35sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:background="@drawable/curve_linear_layout"
                 android:backgroundTint="@color/purple_500"
                 app:srcCompat="@drawable/ic_baseline_check_24" />
@@ -52,14 +52,7 @@
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome, first time user."
-            android:textColor="@color/deep_grey" />
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="You are required to register a face id to proceed."
+            android:text="Capture face to proceed with action."
             android:textColor="@color/deep_grey" />
     </LinearLayout>
 

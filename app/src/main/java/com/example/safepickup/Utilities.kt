@@ -1,12 +1,16 @@
 package com.example.safepickup
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
-import com.example.safepickup.Activity.LoginActivity
-import com.example.safepickup.Activity.MainActivity
-import com.example.safepickup.Camera.CameraActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import com.example.safepickup.Activity.*
 
 class Utilities {
     companion object {
@@ -19,6 +23,16 @@ class Utilities {
         fun intent_setupFaceId(context: Context): Intent {
             Toast.makeText(context, "Setup of face id is required for first time user", Toast.LENGTH_SHORT).show()
             return Intent(context, CameraActivity::class.java)
+        }
+
+        @JvmStatic
+        fun intent_checkIn(context: Context): Intent {
+            return Intent(context, CheckInActivity::class.java)
+        }
+
+        @JvmStatic
+        fun intent_faceScan(context: Context): Intent {
+            return Intent(context, FaceScanActivity::class.java)
         }
 
         @JvmStatic

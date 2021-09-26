@@ -1,10 +1,10 @@
-package com.example.safepickup.Camera
+package com.example.safepickup.Activity
 
+import android.Manifest
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -14,9 +14,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.safepickup.Interface.API
-import com.example.safepickup.Model.InsertImageRespond
+import com.example.safepickup.Model.RequestPickUpStudentsRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
@@ -34,52 +36,72 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
-
-class CameraActivity : AppCompatActivity() {
-    private val pic_id = 123
-
-    // Define the button and imageview type variable
-    lateinit var camera_open_id: ImageView
+class FaceScanActivity : AppCompatActivity() {
+    private val pic_id = 111
+    lateinit var camera_button: ImageView
     lateinit var click_image_id: ImageView
     lateinit var currentPhotoPath: String
     lateinit var iv_confirm_image: ImageView
 
-    var gson = GsonBuilder()
-            .setLenient()
-            .create()
-
-    val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
-            .build()
-
-    val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.1.7")
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(okHttpClient)
-            .build()
-
-    val service = retrofit.create(API::class.java)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera)
+        setContentView(R.layout.activity_face_scan)
         supportActionBar?.hide()
 
-        camera_open_id = findViewById(R.id.camera_button)
-        click_image_id = findViewById(R.id.click_image)
-        iv_confirm_image = findViewById(R.id.iv_confirm_image)
+        val intent: Intent = intent
+        val student_ids: ArrayList<String> = intent.getStringArrayListExtra("student_ids") as ArrayList<String>
 
-        camera_open_id.setOnClickListener { // Create the camera_intent ACTION_IMAGE_CAPTURE
-            dispatchTakePictureIntent()
+        camera_button       = findViewById(R.id.camera_button)
+        click_image_id      = findViewById(R.id.click_image)
+        iv_confirm_image    = findViewById(R.id.iv_confirm_image)
+
+        camera_button.setOnClickListener { // Create the camera_intent ACTION_IMAGE_CAPTURE
+            checkForCameraPermission()
         }
 
         iv_confirm_image.setOnClickListener {
             val file = File(currentPhotoPath)
-            uploadImage(file.name, Uri.fromFile(file))
+            sendRequest(file.name, Uri.fromFile(file), student_ids)
         }
+    }
 
+    fun checkForCameraPermission(){
+        if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA) !==
+                PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.CAMERA)) {
+                ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.CAMERA), 1)
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        arrayOf(Manifest.permission.CAMERA), 1)
+            }
+        }
+        else{
+            dispatchTakePictureIntent()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                        PackageManager.PERMISSION_GRANTED) {
+                    if ((ContextCompat.checkSelfPermission(this,
+                                    Manifest.permission.CAMERA) ===
+                                    PackageManager.PERMISSION_GRANTED)) {
+                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                return
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -100,9 +122,24 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage(name: String, fromFile: Uri?) {
-        val sharedPreferences: SharedPreferences = getSharedPreferences(getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
-        val progressDialog = ProgressDialog.show(this@CameraActivity, "",
+    private fun sendRequest(name: String, fromFile: Uri?, student_ids: ArrayList<String>) {
+        var gson = GsonBuilder()
+                .setLenient()
+                .create()
+
+        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build()
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl("http://192.168.1.7")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(okHttpClient)
+                .build()
+
+        val service = retrofit.create(API::class.java)
+        val progressDialog = ProgressDialog.show(this, "",
                 "Loading. Please wait...", true)
 
         // Pass it like this
@@ -113,34 +150,29 @@ class CameraActivity : AppCompatActivity() {
         val body: MultipartBody.Part = MultipartBody.Part.createFormData("image", file.name, requestFile)
 
         // Add another part within the multipart request
-        val user_id: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), sharedPreferences.getString("user_id", "VALUE_MISSING").toString())
-        val credential: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
+        val user_id: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), Utilities.getSafePref(this, "user_id"))
+        val credential: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), Utilities.getSafePref(this, "credential"))
+        val face_id: RequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), Utilities.getSafePref(this, "face_id"))
 
-        val call: Call<InsertImageRespond?>? = service.insertIamge(user_id, credential, body)
+        val call: Call<RequestPickUpStudentsRespond?>? = service.requestPickUpStudents(user_id, credential, face_id, student_ids, body)
 
-        call?.enqueue(object : Callback<InsertImageRespond?> {
-            override fun onResponse(call: Call<InsertImageRespond?>, response: Response<InsertImageRespond?>) {
+        call?.enqueue(object : Callback<RequestPickUpStudentsRespond?> {
+            override fun onResponse(call: Call<RequestPickUpStudentsRespond?>, response: Response<RequestPickUpStudentsRespond?>) {
                 progressDialog.dismiss()
 
-                val insertImageRespond: InsertImageRespond? = response.body()
+                val insertImageRespond: RequestPickUpStudentsRespond? = response.body()
 
                 if (insertImageRespond?.authorized == true) {
                     Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
                     Log.d("Retrofit", insertImageRespond?.message.toString())
-
-                    if (!insertImageRespond?.faceId.toString().isEmpty()) {
-                        Toast.makeText(applicationContext, "Succss " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
-                        startActivity(Utilities.intent_mainActivity(this@CameraActivity))
-                        finish()
-                    } else {
-                        Toast.makeText(applicationContext, "Please try again, " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(applicationContext, "Caution " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Success " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                    val intent:Intent = Intent()
+                    setResult(RESULT_OK, intent)
+                    finish()
                 }
             }
 
-            override fun onFailure(call: Call<InsertImageRespond?>, t: Throwable) {
+            override fun onFailure(call: Call<RequestPickUpStudentsRespond?>, t: Throwable) {
                 progressDialog.dismiss()
                 Log.d("Retrofit", t.message.toString())
                 Toast.makeText(applicationContext, "Please try again " + t.message.toString(), Toast.LENGTH_SHORT).show()
@@ -182,6 +214,7 @@ class CameraActivity : AppCompatActivity() {
                             "com.example.android.fileprovider",
                             it
                     )
+                    takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, pic_id)
                 }
