@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">SafePickup</string>
     <string name="FILE_PREF">com.example.safepickup</string>
+    <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoieXBsZW9uZyIsImEiOiJja2dxY2dlN2Iwdno1MnBvaTVpa3QybGM0In0.QDijj62XUB8z7IVHrzK6Kw</string>
+    <string name="google_map_access_token">AIzaSyAFJTpfKrzU5opOhtKO1OSIZTERu-y_GPk</string>
 
     <!--    fragment name-->
     <string name="title_home">Home</string>

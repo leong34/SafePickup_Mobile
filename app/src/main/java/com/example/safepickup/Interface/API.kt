@@ -66,4 +66,11 @@ interface API {
                               @Part("face_id") face_id: RequestBody,
                               @Part("student_ids[]") student_ids: ArrayList<String>,
                               @Part image: MultipartBody.Part): Call<RequestPickUpStudentsRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/getOrganizationAddress.php")
+    open fun fetchOrganizationAddress(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String
+    ): Call<FetchOrganizationAddressRespond?>?
 }
