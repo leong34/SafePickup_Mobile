@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.graphics.Color.parseColor
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,24 +16,26 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.FetchOrganizationAddressRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.gson.GsonBuilder
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.DirectionsCriteria
+import com.mapbox.api.directions.v5.MapboxDirections
+import com.mapbox.api.directions.v5.models.DirectionsResponse
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
-import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.geometry.LatLngBounds
@@ -60,6 +61,8 @@ import com.mapbox.navigation.base.internal.extensions.applyDefaultParams
 import com.mapbox.navigation.base.internal.extensions.coordinates
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
+import com.mapbox.navigation.ui.NavigationViewOptions
+import kotlinx.android.synthetic.main.activity_navigation.*
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import retrofit2.Call
@@ -79,9 +82,13 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
     private var locationComponent: LocationComponent? = null
     private var origin: Point? = null
     private var destination: Point? = null
+    private var currentRoute: DirectionsRoute? = null
+    private var navigationOptions: NavigationViewOptions? = null
 
     private var destLat: Double = 0.0
     private var destLng: Double = 0.0
+    private var oriLat: Double = 0.0
+    private var oriLng: Double = 0.0
 
     var organizationFullAddress: String = ""
 
@@ -106,37 +113,21 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
 
-        client = LocationServices.getFusedLocationProviderClient(requireActivity())
-        callback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                val location: Location? = locationResult.lastLocation
-                if (location != null) {
-                    Log.i("wtf", location.latitude.toString())
-                    Log.i("wtf", location.longitude.toString())
-                }
-            }
-        }
-
-//        startTracking()
-
         requestQueue = Volley.newRequestQueue(requireContext())
 
         btn = root.findViewById(R.id.button)
         btn?.setOnClickListener {
-            mapboxMap?.locationComponent?.lastKnownLocation?.let { originLocation ->
-                val ori:Point = Point.fromLngLat(originLocation.longitude, originLocation.latitude)
-                val dest: Point = Point.fromLngLat(destLng, destLat)
+            oriLng = 100.4748699
+            oriLat = 5.2751108
+            destLng = 100.2860238
+            destLat = 5.338936299999999
 
-                mapboxNavigation?.requestRoutes(
-                        RouteOptions.builder().applyDefaultParams()
-                                .accessToken(getString(R.string.mapbox_access_token))
-                                .coordinates(ori, null, dest)
-                                .alternatives(true)
-                                .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
-                                .build(),
-                        routesReqCallback
-                )
-            }
+            val intent = Utilities.intent_navigation(this.requireContext())
+            intent.putExtra("oriLat", oriLat)
+            intent.putExtra("oriLng", oriLng)
+            intent.putExtra("destLat", destLat)
+            intent.putExtra("destLng", destLng)
+            startActivity(intent)
         }
 
         return root
@@ -177,6 +168,9 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                         val ori = LatLng(mapboxMap?.locationComponent?.lastKnownLocation?.latitude!!, mapboxMap?.locationComponent?.lastKnownLocation?.longitude!!)
                         val end = LatLng(destLat, destLng)
 
+                        oriLat = mapboxMap?.locationComponent?.lastKnownLocation?.latitude!!
+                        oriLng = mapboxMap?.locationComponent?.lastKnownLocation?.longitude!!
+
                         val options = MarkerOptions()
                         options.position(LatLng(destLat, destLng))
                         mapboxMap?.addMarker(options)
@@ -186,22 +180,20 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                                 .build()
                         mapboxMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50), 5000)
 
-//                        mapboxMap?.locationComponent?.lastKnownLocation?.let { originLocation ->
-//                            val ori:Point = Point.fromLngLat(originLocation.longitude, originLocation.latitude)
-//                            val dest: Point = Point.fromLngLat(destLng, destLat)
-//
-//                            mapboxNavigation?.requestRoutes(
-//                                    RouteOptions.builder().applyDefaultParams()
-//                                            .accessToken(getString(R.string.mapbox_access_token))
-//                                            .coordinates(ori, null, dest)
-//                                            .alternatives(true)
-//                                            .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
-//                                            .build(),
-//                                    routesReqCallback
-//                            )
-//                        }
-                        Log.i("Volley", mapboxMap.toString())
-                        Log.i("Volley", "$destLat - $destLng")
+                        mapboxMap?.locationComponent?.lastKnownLocation?.let { originLocation ->
+                            val ori: Point = Point.fromLngLat(originLocation.longitude, originLocation.latitude)
+                            val dest: Point = Point.fromLngLat(destLng, destLat)
+
+                            mapboxNavigation?.requestRoutes(
+                                    RouteOptions.builder().applyDefaultParams()
+                                            .accessToken(getString(R.string.mapbox_access_token))
+                                            .coordinates(ori, null, dest)
+                                            .alternatives(true)
+                                            .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
+                                            .build(),
+                                    routesReqCallback
+                            )
+                        }
                     }
                 }, { error ->
                     error.printStackTrace()
@@ -221,31 +213,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
-
-//    override fun onMapLongClick(latLng: LatLng): Boolean {
-//        // Place the destination marker at the map long click location
-////        mapboxMap?.getStyle {
-////            val clickPointSource = it.getSourceAs<GeoJsonSource>("CLICK_SOURCE")
-////            clickPointSource?.setGeoJson(Point.fromLngLat(latLng.longitude, latLng.latitude))
-////        }
-//        mapboxMap?.locationComponent?.lastKnownLocation?.let { originLocation ->
-//
-//            val ori:Point = Point.fromLngLat(originLocation.longitude, originLocation.latitude)
-//            val dest: Point = Point.fromLngLat(destLng, destLat)
-//
-//            mapboxNavigation?.requestRoutes(
-//                    RouteOptions.builder().applyDefaultParams()
-//                            .accessToken(getString(R.string.mapbox_access_token))
-//                            .coordinates(ori, null, dest)
-//                            .alternatives(true)
-//                            .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
-//                            .build(),
-//                    routesReqCallback
-//            )
-//        }
-//        return true
-//    }
-
     private val routesReqCallback = object : RoutesRequestCallback {
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()) {
@@ -261,7 +228,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                     clickPointSource?.setGeoJson(routeLineString)
                 }
                 Toast.makeText(requireContext(), "Route found", Toast.LENGTH_LONG).show()
-                Log.i("route call back ", "route request failure %s$routes")
+//                Log.i("route call back ", "route request  %s$routes")
             } else {
                 Toast.makeText(requireContext(), "No routes found", Toast.LENGTH_LONG).show()
             }
@@ -273,45 +240,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         }
 
         override fun onRoutesRequestCanceled(routeOptions: RouteOptions) {
-            Log.i("route call back ","route request canceled")
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun startTracking() {
-        val request = LocationRequest()
-        request.interval = 3000
-        request.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        client!!.requestLocationUpdates(request, callback, null)
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private fun enableLocationComponent(loadedMapStyle: Style) {
-        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
-            val customLocationComponentOptions = LocationComponentOptions.builder(requireContext())
-                    .pulseEnabled(true)
-                    .build()
-
-            locationComponent = mapboxMap!!.locationComponent
-            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle)
-                    .locationComponentOptions(customLocationComponentOptions)
-                    .build()
-
-            locationComponent!!.activateLocationComponent(locationComponentActivationOptions)
-
-            locationComponent!!.isLocationComponentEnabled = true
-
-            locationComponent!!.cameraMode = CameraMode.TRACKING
-
-            locationComponent!!.renderMode = RenderMode.COMPASS
-
-        } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            }
+            Log.i("route call back ", "route request canceled")
         }
     }
 
@@ -370,9 +299,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
-//        this.mapboxMap = mapboxMap
-//        mapboxMap.setStyle(Style.MAPBOX_STREETS) { style -> enableLocationComponent(style) }
-
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
             this.mapboxMap = mapboxMap
 
@@ -433,18 +359,26 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun enableLocationComponent() {
-        mapboxMap?.getStyle {
-            mapboxMap?.locationComponent?.apply {
-                activateLocationComponent(
-                        LocationComponentActivationOptions.builder(
-                                requireContext(),
-                                it
-                        )
-                                .build()
-                )
-                isLocationComponentEnabled = true
-                cameraMode = CameraMode.TRACKING
-                renderMode = RenderMode.COMPASS
+        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
+            mapboxMap?.getStyle {
+                mapboxMap?.locationComponent?.apply {
+                    activateLocationComponent(
+                            LocationComponentActivationOptions.builder(
+                                    requireContext(),
+                                    it
+                            )
+                                    .build()
+                    )
+                    isLocationComponentEnabled = true
+                    cameraMode = CameraMode.TRACKING
+                    renderMode = RenderMode.COMPASS
+                }
+            }
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.safepickup.Interface
 
 import com.example.safepickup.Model.*
+import com.mapbox.api.directions.v5.models.DirectionsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -73,4 +74,10 @@ interface API {
             @Field("user_id") user_id: String,
             @Field("credential") credential: String
     ): Call<FetchOrganizationAddressRespond?>?
+
+    @FormUrlEncoded
+    @POST("directions/v5/mapbox/driving?access_token=pk.eyJ1IjoieXBsZW9uZyIsImEiOiJja2dxY2dlN2Iwdno1MnBvaTVpa3QybGM0In0.QDijj62XUB8z7IVHrzK6Kw")
+    open fun mapboxDirectionAPI(
+            @Field("coordinates") coordinates: String
+    ): Call<DirectionsResponse?>?
 }

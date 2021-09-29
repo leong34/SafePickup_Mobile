@@ -71,6 +71,10 @@ dependencies {
 
     // Mapbox"
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2'
+    implementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:5.8.0'
+    implementation ("com.mapbox.navigation:ui:1.5.1"){
+        exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-android-telemetry'
+    }
     implementation ("com.mapbox.navigation:core:1.5.1"){
         exclude group: 'com.mapbox.mapboxsdk', module: 'mapbox-android-telemetry'
     }
