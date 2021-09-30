@@ -1,14 +1,7 @@
 package com.example.safepickup.Activity
 
-import android.Manifest
 import android.app.ProgressDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
@@ -20,7 +13,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.CheckCredentialRespond
 import com.example.safepickup.Model.LoginRespond
@@ -70,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun checkFieldsForEmptyValues() {
-        val b = findViewById<View>(R.id.btn_login) as Button
+        val b = findViewById<View>(R.id.btn_update) as Button
         val s1: String = et_loginEmail?.text.toString()
         val s2: String = et_loginPassword?.text.toString()
         b.isClickable = !(s1 == "" || s2 == "")
@@ -84,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
         et_loginEmail           = findViewById(R.id.et_loginEmail)
         et_loginPassword        = findViewById(R.id.et_loginPassword)
         iv_PasswordVisibility   = findViewById(R.id.iv_PasswordVisibility)
-        btn_login               = findViewById(R.id.btn_login)
+        btn_login               = findViewById(R.id.btn_update)
 
         et_loginEmail.addTextChangedListener(mTextWatcher)
         et_loginPassword.addTextChangedListener(mTextWatcher)
@@ -107,10 +99,14 @@ class LoginActivity : AppCompatActivity() {
         }
 //        startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
 
-        startActivity(Utilities.intent_mainActivity(this))
+//        startActivity(Utilities.intent_mainActivity(this))
 //        Uncomment this
-//        authorized(sharedPreferences.getString("user_id", "VALUE_MISSING").toString(), sharedPreferences.getString("credential", "VALUE_MISSING").toString())
-//        checkFieldsForEmptyValues()
+        authorized(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"))
+        checkFieldsForEmptyValues()
+    }
+
+    override fun onBackPressed() {
+        finishAffinity()
     }
 
     fun loggingIn(email: String, password: String) {
@@ -137,8 +133,7 @@ class LoginActivity : AppCompatActivity() {
                     Utilities.setSafePref(this@LoginActivity, loginRespond?.data?.userId.toString(), loginRespond?.data?.credential.toString(), loginRespond?.data?.faceId.toString(), loginRespond?.data?.organizationId.toString())
                     if (loginRespond?.data?.faceId!!.isEmpty()) {
                         startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
-                    }
-                    else {
+                    } else {
                         startActivity(Utilities.intent_mainActivity(this@LoginActivity))
                     }
                 }

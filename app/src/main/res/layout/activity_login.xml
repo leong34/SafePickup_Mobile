@@ -101,7 +101,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_login"
+            android:id="@+id/btn_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/curve_linear_layout"

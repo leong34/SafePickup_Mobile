@@ -62,7 +62,6 @@ import com.mapbox.navigation.base.internal.extensions.coordinates
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.directions.session.RoutesRequestCallback
 import com.mapbox.navigation.ui.NavigationViewOptions
-import kotlinx.android.synthetic.main.activity_navigation.*
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import retrofit2.Call

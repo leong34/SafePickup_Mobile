@@ -87,7 +87,7 @@ class NavigationActivity : AppCompatActivity(), OnNavigationReadyCallback, Navig
                 val optionsBuilder = NavigationViewOptions.builder(this@NavigationActivity)
                 optionsBuilder.navigationListener(this@NavigationActivity)
                 optionsBuilder.directionsRoute(currentRoute)
-                optionsBuilder.shouldSimulateRoute(false)
+                optionsBuilder.shouldSimulateRoute(true)
 
                 navigationView.startNavigation(optionsBuilder.build())
 

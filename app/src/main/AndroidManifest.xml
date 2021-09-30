@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafePickup"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.NavigationActivity"></activity>
+        <activity android:name=".Activity.SettingActivity"></activity>
+        <activity android:name=".Activity.NavigationActivity" />
         <activity android:name=".Activity.FaceScanActivity" />
         <activity android:name=".Activity.CheckInActivity" />
         <activity android:name=".Activity.CameraActivity" />

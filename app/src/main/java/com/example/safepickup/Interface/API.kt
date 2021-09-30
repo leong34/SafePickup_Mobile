@@ -80,4 +80,23 @@ interface API {
     open fun mapboxDirectionAPI(
             @Field("coordinates") coordinates: String
     ): Call<DirectionsResponse?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/getUserDetail.php")
+    open fun getUserDetail(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String
+    ): Call<FetchUserDetailRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/updateUserDetail.php")
+    open fun updateUserDetail(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+            @Field("last_name") last_name: String,
+            @Field("first_name") first_name: String,
+            @Field("tel") tel: String,
+            @Field("old_password") old_password: String,
+            @Field("new_password") new_password: String
+    ): Call<BasicRespond?>?
 }
