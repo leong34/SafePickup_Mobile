@@ -1,15 +1,9 @@
 package com.example.safepickup
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.provider.Settings
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.example.safepickup.Activity.*
 
 class Utilities {
@@ -43,6 +37,16 @@ class Utilities {
         @JvmStatic
         fun intent_setting(context: Context): Intent {
             return Intent(context, SettingActivity::class.java)
+        }
+
+        @JvmStatic
+        fun intent_guardian(context: Context): Intent {
+            return Intent(context, GuardianAddActivity::class.java)
+        }
+
+        @JvmStatic
+        fun intent_guardianList(context: Context): Intent {
+            return Intent(context, GuardianListActivity::class.java)
         }
 
         @JvmStatic

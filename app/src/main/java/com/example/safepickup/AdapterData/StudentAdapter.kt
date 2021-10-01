@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safepickup.R
 
-class StudentAdapter(private val studentDataList: ArrayList<StudentData>): RecyclerView.Adapter<StudentAdapter.ViewHolder?>() {
+class StudentAdapter(private val studentDataList: ArrayList<StudentData>, private val allowInfo: Boolean = true): RecyclerView.Adapter<StudentAdapter.ViewHolder?>() {
     var context: Context? = null
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -55,28 +55,33 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>): Recyc
                 ContextCompat.getColor(context!!, R.color.cyan) else ContextCompat.getColor(context!!, R.color.light_grey))
         }
 
-        holder.iv_student_next?.setOnClickListener {
-            Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show()
+        if(allowInfo) {
+            holder.iv_student_next?.setOnClickListener {
+                Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show()
 
 
+            }
+            when (studentDataList.get(position).attendance) {
+                "Undefined" -> {
+                    holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.deep_grey))
+                }
+                "In School" -> {
+                    holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.green))
+                }
+                "Checked Out" -> {
+                    holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.yellow))
+                }
+                "Absent" -> {
+                    holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.red))
+                }
+                "Requested for pick up" -> {
+                    holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.orange))
+                }
+            }
         }
-
-        when(studentDataList.get(position).attendance){
-            "Undefined" -> {
-                holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.deep_grey))
-            }
-            "In School" -> {
-                holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.green))
-            }
-            "Checked Out" -> {
-                holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.yellow))
-            }
-            "Absent" -> {
-                holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.red))
-            }
-            "Requested for pick up" -> {
-                holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.orange))
-            }
+        else{
+            holder.iv_student_next?.visibility = View.GONE
+            holder.text_kid_status?.visibility = View.GONE
         }
     }
 

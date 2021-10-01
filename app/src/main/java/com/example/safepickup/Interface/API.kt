@@ -44,6 +44,13 @@ interface API {
     ): Call<FetchStudentsListRespond?>?
 
     @FormUrlEncoded
+    @POST("/fyp_web/API/fetchGuardiansList.php")
+    open fun fetchGuardiansList(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+    ): Call<FetchGuardiansListRespond?>?
+
+    @FormUrlEncoded
     @POST("/fyp_web/API/checkInStudents.php")
     open fun checkInStudent(
             @Field("user_id") user_id: String,
@@ -98,5 +105,33 @@ interface API {
             @Field("tel") tel: String,
             @Field("old_password") old_password: String,
             @Field("new_password") new_password: String
+    ): Call<BasicRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/fetchAllEmail.php")
+    open fun getAllUserEmail(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String
+    ): Call<FetchAllEmailRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/addFamilyMember.php")
+    open fun addFamilyMember(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+            @Field("last_name") last_name: String,
+            @Field("first_name") first_name: String,
+            @Field("email") email: String,
+            @Field("tel") tel: String,
+            @Field("new_password") new_password: String,
+            @Field("student_ids[]") student_ids: ArrayList<String>,
+    ): Call<BasicRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/deleteGuardians.php")
+    open fun deleteGuardians(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+            @Field("guardian_ids[]") guardian_ids: ArrayList<String>
     ): Call<BasicRespond?>?
 }

@@ -221,4 +221,5 @@ class FaceScanActivity : AppCompatActivity() {
             }
         }
     }
+
 }

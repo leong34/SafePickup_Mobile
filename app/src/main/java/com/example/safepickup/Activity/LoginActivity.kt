@@ -19,6 +19,7 @@ import com.example.safepickup.Model.LoginRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,10 +31,10 @@ import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
     val TAG:String = "Login Activity"
-    lateinit var et_loginEmail:EditText
-    lateinit var et_loginPassword:EditText
-    lateinit var iv_PasswordVisibility: ImageView
-    lateinit var btn_login:Button
+//    lateinit var et_loginEmail:EditText
+//    lateinit var et_loginPassword:EditText
+//    lateinit var iv_PasswordVisibility: ImageView
+//    lateinit var btn_login:Button
 
     var gson = GsonBuilder()
             .setLenient()
@@ -63,8 +64,8 @@ class LoginActivity : AppCompatActivity() {
 
     fun checkFieldsForEmptyValues() {
         val b = findViewById<View>(R.id.btn_update) as Button
-        val s1: String = et_loginEmail?.text.toString()
-        val s2: String = et_loginPassword?.text.toString()
+        val s1: String = et_loginEmail.text.toString()
+        val s2: String = et_loginPassword.text.toString()
         b.isClickable = !(s1 == "" || s2 == "")
     }
 
@@ -73,34 +74,31 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
 
-        et_loginEmail           = findViewById(R.id.et_loginEmail)
-        et_loginPassword        = findViewById(R.id.et_loginPassword)
-        iv_PasswordVisibility   = findViewById(R.id.iv_PasswordVisibility)
-        btn_login               = findViewById(R.id.btn_update)
+//        et_loginEmail           = findViewById(R.id.et_loginEmail)
+//        et_loginPassword        = findViewById(R.id.et_loginPassword)
+//        iv_PasswordVisibility   = findViewById(R.id.iv_PasswordVisibility)
+//        btn_login               = findViewById(R.id.btn_update)
 
         et_loginEmail.addTextChangedListener(mTextWatcher)
         et_loginPassword.addTextChangedListener(mTextWatcher)
 
         iv_PasswordVisibility?.setOnClickListener{
-            if(et_loginPassword?.transformationMethod == HideReturnsTransformationMethod.getInstance()){
-                et_loginPassword?.transformationMethod = PasswordTransformationMethod.getInstance()
-                iv_PasswordVisibility!!.setImageResource(R.drawable.ic_baseline_visibility_off_24)
+            if(et_loginPassword.transformationMethod == HideReturnsTransformationMethod.getInstance()){
+                et_loginPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                iv_PasswordVisibility.setImageResource(R.drawable.ic_baseline_visibility_off_24)
             }
             else{
-                et_loginPassword?.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                iv_PasswordVisibility!!.setImageResource(R.drawable.ic_baseline_visibility_24)
+                et_loginPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                iv_PasswordVisibility.setImageResource(R.drawable.ic_baseline_visibility_24)
             }
         }
 
-        btn_login?.setOnClickListener{
-            Log.i(TAG, et_loginEmail?.text.toString())
-            Log.i(TAG, et_loginPassword?.text.toString())
-            loggingIn(et_loginEmail?.text.toString(), et_loginPassword?.text.toString())
+        btn_update.setOnClickListener{
+            Log.i(TAG, et_loginEmail.text.toString())
+            Log.i(TAG, et_loginPassword.text.toString())
+            loggingIn(et_loginEmail.text.toString(), et_loginPassword.text.toString())
         }
-//        startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
 
-//        startActivity(Utilities.intent_mainActivity(this))
-//        Uncomment this
         authorized(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"))
         checkFieldsForEmptyValues()
     }

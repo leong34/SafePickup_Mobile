@@ -62,7 +62,7 @@ class AccountFragment : Fragment() {
         tv_userTel      = view.findViewById(R.id.tv_userTel)
 
         guardian_btn.setOnClickListener {
-
+            startActivity(Utilities.intent_guardianList(requireContext()))
         }
 
         setting_btn.setOnClickListener {
@@ -107,7 +107,7 @@ class AccountFragment : Fragment() {
 
                 val userDetail: FetchUserDetailRespond? = response.body()
 
-                tv_fullName.text    = "Hi, ${userDetail?.firstName} ${userDetail?.lastName}"
+                tv_fullName.text    = "Hi, ${userDetail?.lastName} ${userDetail?.firstName}"
                 tv_userId.text      = userDetail?.userInnerId
                 tv_userEmail.text   = userDetail?.email
                 tv_userTel.text     = userDetail?.telNum

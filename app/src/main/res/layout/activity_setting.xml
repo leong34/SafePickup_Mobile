@@ -238,7 +238,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="0.1"
                     android:background="@color/transparent"
-                    android:onClick="viewPassword"
                     app:srcCompat="@drawable/ic_baseline_visibility_off_24" />
             </LinearLayout>
 

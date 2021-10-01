@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafePickup"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.SettingActivity"></activity>
+        <activity android:name=".Activity.GuardianListActivity"></activity>
+        <activity android:name=".Activity.GuardianAddActivity" />
+        <activity android:name=".Activity.SettingActivity" />
         <activity android:name=".Activity.NavigationActivity" />
         <activity android:name=".Activity.FaceScanActivity" />
         <activity android:name=".Activity.CheckInActivity" />

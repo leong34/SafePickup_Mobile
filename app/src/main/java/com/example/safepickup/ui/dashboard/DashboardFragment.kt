@@ -44,6 +44,7 @@ import com.example.safepickup.Model.InsertImageRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -235,6 +236,14 @@ class DashboardFragment : Fragment() {
                 noticeRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 noticeRecyclerView?.adapter = noticeAdapter
 
+                if (noticeList.isEmpty()) {
+                    notice_empty_view.visibility = View.VISIBLE
+                    noticeRecyclerView?.visibility = View.GONE
+                } else {
+                    notice_empty_view.visibility = View.GONE
+                    noticeRecyclerView?.visibility = View.VISIBLE
+                }
+
                 Log.i("Retrofit", "succss " + noticesListRespond?.message.toString())
                 Toast.makeText(requireActivity(), noticesListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
@@ -280,6 +289,16 @@ class DashboardFragment : Fragment() {
 //                val studentAdapter = StudentAdapter(studentList)
                 studentRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 studentRecyclerView?.adapter = studentAdapter
+                studentRecyclerView?.isNestedScrollingEnabled = false
+
+                if (studentList.isEmpty()) {
+                    student_empty_view.visibility = View.VISIBLE
+                    studentRecyclerView?.visibility = View.GONE
+                } else {
+                    student_empty_view.visibility = View.GONE
+                    studentRecyclerView?.visibility = View.VISIBLE
+                }
+
 
                 Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
                 Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()

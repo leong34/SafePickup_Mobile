@@ -231,6 +231,11 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        Utilities.logout(this)
+        finishAffinity()
+    }
+
 
     //new added
     private fun deleteImage(uri: Uri?){
