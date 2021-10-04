@@ -130,7 +130,6 @@ class DashboardFragment : Fragment() {
                         .setCancelable(false)
                         .setPositiveButton("Yes") { dialog, id ->
                             markStudentAbsent(Utilities.getSafePref(requireActivity(), "user_id"), Utilities.getSafePref(requireActivity(), "credential"), student_ids)
-                            reloadStudent()
                         }
                         .setNegativeButton("No") { dialog, id ->
 
@@ -180,7 +179,6 @@ class DashboardFragment : Fragment() {
             if (resultCode === RESULT_OK) {
                 val encrypted_code: String = data?.getStringExtra("encrypted_code").toString()
                 markStudentCheckIn(Utilities.getSafePref(requireActivity(), "user_id"), Utilities.getSafePref(requireActivity(), "credential"), student_ids, encrypted_code)
-                reloadStudent()
             }
         }
         else if (requestCode === 2) {
@@ -336,6 +334,7 @@ class DashboardFragment : Fragment() {
 
                 Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
                 Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                reloadStudent()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
@@ -370,6 +369,7 @@ class DashboardFragment : Fragment() {
 
                 Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
                 Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                reloadStudent()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {

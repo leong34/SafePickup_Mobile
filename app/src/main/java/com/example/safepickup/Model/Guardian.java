@@ -1,6 +1,7 @@
 
 package com.example.safepickup.Model;
 
+import java.util.List;
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -26,6 +27,12 @@ public class Guardian {
     @SerializedName("email")
     @Expose
     private String email;
+    @SerializedName("verified_at")
+    @Expose
+    private String verifiedAt;
+    @SerializedName("students")
+    @Expose
+    private List<Student> students = null;
 
     public String getUserId() {
         return userId;
@@ -73,6 +80,22 @@ public class Guardian {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getVerifiedAt() {
+        return verifiedAt;
+    }
+
+    public void setVerifiedAt(String verifiedAt) {
+        this.verifiedAt = verifiedAt;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
 }

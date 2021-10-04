@@ -128,7 +128,12 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, loginRespond?.message.toString(), Toast.LENGTH_SHORT).show()
 
                 if (loginRespond?.data?.userId?.isEmpty() == false) {
-                    Utilities.setSafePref(this@LoginActivity, loginRespond?.data?.userId.toString(), loginRespond?.data?.credential.toString(), loginRespond?.data?.faceId.toString(), loginRespond?.data?.organizationId.toString())
+                    Utilities.setSafePref(this@LoginActivity,
+                            loginRespond?.data?.userId.toString(),
+                            loginRespond?.data?.credential.toString(),
+                            loginRespond?.data?.faceId.toString(),
+                            loginRespond?.data?.organizationId.toString(),
+                            loginRespond?.data?.userType.toString())
                     if (loginRespond?.data?.faceId!!.isEmpty()) {
                         startActivity(Utilities.intent_setupFaceId(this@LoginActivity))
                     } else {

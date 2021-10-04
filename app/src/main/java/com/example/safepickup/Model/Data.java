@@ -20,6 +20,9 @@ public class Data {
     @SerializedName("face_id")
     @Expose
     private String faceId;
+    @SerializedName("user_type")
+    @Expose
+    private String userType;
 
     public String getUserId() {
         return userId;
@@ -51,6 +54,14 @@ public class Data {
 
     public void setFaceId(String faceId) {
         this.faceId = faceId;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
 }

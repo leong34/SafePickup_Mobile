@@ -202,6 +202,9 @@ class SettingActivity : AppCompatActivity() {
 
                 val userDetail: BasicRespond? = response.body()
 
+                if(userDetail?.message.toString() != "Failed due to wrong password")
+                    finish()
+
                 Log.i("Retrofit", "succss " + userDetail?.message.toString())
                 Toast.makeText(this@SettingActivity, userDetail?.message.toString(), Toast.LENGTH_SHORT).show()
             }

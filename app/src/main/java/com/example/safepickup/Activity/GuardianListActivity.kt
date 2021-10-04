@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safepickup.AdapterData.GuardianAdapter
 import com.example.safepickup.AdapterData.GuardianData
+import com.example.safepickup.AdapterData.StudentData
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.BasicRespond
 import com.example.safepickup.Model.FetchGuardiansListRespond
@@ -105,7 +106,13 @@ class GuardianListActivity : AppCompatActivity() {
                 guardianList.clear()
 
                 for (guardian in guardiansListFromRespond!!) {
-                    guardianList.add(GuardianData(guardian.firstName, guardian.lastName, guardian.userInternalId, guardian.userId))
+                    val guardianStudents = guardian.students
+                    var studentList: ArrayList<StudentData> = ArrayList()
+                    for(guardian_student in guardianStudents){
+                        studentList.add(StudentData(guardian_student.firstName, guardian_student.lastName, guardian_student.studentId, guardian_student.age.toInt(), guardian_student.gender, guardian_student.classId, guardian_student.className, guardian_student.attendance))
+                    }
+                    studentList.sort()
+                    guardianList.add(GuardianData(guardian.firstName, guardian.lastName, guardian.userInternalId, guardian.userId, guardian.verifiedAt, studentList))
                 }
                 guardianList.sort()
 

@@ -18,13 +18,11 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>, privat
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var text_kid_name: TextView?
         var text_kid_status: TextView?
-        var iv_student_next: ImageView?
         var iv_status: ImageView?
         var card_student: CardView?
         init {
             text_kid_name = itemView.findViewById(R.id.text_kid_name)
             text_kid_status = itemView.findViewById(R.id.text_kid_status)
-            iv_student_next = itemView.findViewById(R.id.iv_student_next)
             iv_status = itemView.findViewById(R.id.iv_status)
             card_student = itemView.findViewById(R.id.card_student)
         }
@@ -56,11 +54,6 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>, privat
         }
 
         if(allowInfo) {
-            holder.iv_student_next?.setOnClickListener {
-                Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show()
-
-
-            }
             when (studentDataList.get(position).attendance) {
                 "Undefined" -> {
                     holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.deep_grey))
@@ -80,7 +73,6 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>, privat
             }
         }
         else{
-            holder.iv_student_next?.visibility = View.GONE
             holder.text_kid_status?.visibility = View.GONE
         }
     }

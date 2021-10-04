@@ -36,6 +36,7 @@ class AccountFragment : Fragment() {
     private lateinit var setting_btn: CardView
     private lateinit var report_btn: CardView
     private lateinit var signout_btn: CardView
+    private lateinit var event_btn: CardView
 
     private lateinit var tv_fullName: TextView
     private lateinit var tv_userId: TextView
@@ -55,6 +56,7 @@ class AccountFragment : Fragment() {
         setting_btn     = view.findViewById(R.id.setting)
         report_btn      = view.findViewById(R.id.report)
         signout_btn     = view.findViewById(R.id.sign_out)
+        event_btn       = view.findViewById(R.id.event)
 
         tv_fullName     = view.findViewById(R.id.tv_fullName)
         tv_userId       = view.findViewById(R.id.tv_userId)
@@ -62,7 +64,11 @@ class AccountFragment : Fragment() {
         tv_userTel      = view.findViewById(R.id.tv_userTel)
 
         guardian_btn.setOnClickListener {
-            startActivity(Utilities.intent_guardianList(requireContext()))
+            Log.i("wtf", Utilities.getSafePref(requireContext(), "user_type"))
+            if(Utilities.getSafePref(requireContext(), "user_type") == "0")
+                startActivity(Utilities.intent_guardianList(requireContext()))
+            else
+                Toast.makeText(requireContext(), "You don't have the authority to add guardian", Toast.LENGTH_LONG).show()
         }
 
         setting_btn.setOnClickListener {
@@ -77,6 +83,10 @@ class AccountFragment : Fragment() {
 
         report_btn.setOnClickListener {
 
+        }
+
+        event_btn.setOnClickListener {
+            startActivity(Utilities.intent_Event(requireContext()))
         }
 
         signout_btn.setOnClickListener {

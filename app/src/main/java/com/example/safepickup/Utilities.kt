@@ -50,13 +50,19 @@ class Utilities {
         }
 
         @JvmStatic
-        fun setSafePref(context: Context, user_id: String, credential: String, faceId: String, organizationId: String){
+        fun intent_Event(context: Context): Intent {
+            return Intent(context, EventActivity::class.java)
+        }
+
+        @JvmStatic
+        fun setSafePref(context: Context, user_id: String, credential: String, faceId: String, organizationId: String, user_type: String){
             val sharedPreferences: SharedPreferences = context.getSharedPreferences(context.getString(R.string.FILE_PREF), Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.putString("user_id", user_id)
             editor.putString("credential", credential)
             editor.putString("face_id", faceId)
             editor.putString("organization_id", organizationId)
+            editor.putString("user_type", user_type)
             editor.commit()
         }
 
