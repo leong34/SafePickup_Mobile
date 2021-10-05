@@ -58,6 +58,14 @@ interface API {
     ): Call<FetchEventRespond?>?
 
     @FormUrlEncoded
+    @POST("/fyp_web/API/fetchStudentAttendance.php")
+    open fun fetchStudentAttendance(
+            @Field("user_id") user_id: String,
+            @Field("credential") credential: String,
+            @Field("student_id") student_id: String,
+    ): Call<FetchEventRespond?>?
+
+    @FormUrlEncoded
     @POST("/fyp_web/API/checkInStudents.php")
     open fun checkInStudent(
             @Field("user_id") user_id: String,

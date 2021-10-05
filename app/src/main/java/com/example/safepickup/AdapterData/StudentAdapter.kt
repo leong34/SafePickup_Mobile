@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safepickup.R
+import com.example.safepickup.Utilities
 
 class StudentAdapter(private val studentDataList: ArrayList<StudentData>, private val allowInfo: Boolean = true): RecyclerView.Adapter<StudentAdapter.ViewHolder?>() {
     var context: Context? = null
@@ -18,12 +19,12 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>, privat
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var text_kid_name: TextView?
         var text_kid_status: TextView?
-        var iv_status: ImageView?
+        var iv_studentNext: ImageView?
         var card_student: CardView?
         init {
             text_kid_name = itemView.findViewById(R.id.text_kid_name)
             text_kid_status = itemView.findViewById(R.id.text_kid_status)
-            iv_status = itemView.findViewById(R.id.iv_status)
+            iv_studentNext = itemView.findViewById(R.id.iv_studentNext)
             card_student = itemView.findViewById(R.id.card_student)
         }
     }
@@ -71,9 +72,16 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>, privat
                     holder.text_kid_status?.setTextColor(ContextCompat.getColor(context!!, R.color.orange))
                 }
             }
+
+            holder.iv_studentNext?.setOnClickListener {
+                val intent = Utilities.intent_studentDetail(context!!)
+                intent.putExtra("student_id", studentDataList[position].student_id)
+                context?.startActivity(intent)
+            }
         }
         else{
             holder.text_kid_status?.visibility = View.GONE
+            holder.iv_studentNext?.visibility = View.GONE
         }
     }
 

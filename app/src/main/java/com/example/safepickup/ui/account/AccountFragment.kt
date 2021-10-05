@@ -6,23 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.safepickup.AdapterData.StudentData
 import com.example.safepickup.Interface.API
-import com.example.safepickup.Model.FetchStudentsListRespond
 import com.example.safepickup.Model.FetchUserDetailRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.fragment_account.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,7 +26,6 @@ import java.util.concurrent.TimeUnit
 class AccountFragment : Fragment() {
     private lateinit var guardian_btn: CardView
     private lateinit var setting_btn: CardView
-    private lateinit var report_btn: CardView
     private lateinit var signout_btn: CardView
     private lateinit var event_btn: CardView
 
@@ -54,7 +45,6 @@ class AccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         guardian_btn    = view.findViewById(R.id.guardians)
         setting_btn     = view.findViewById(R.id.setting)
-        report_btn      = view.findViewById(R.id.report)
         signout_btn     = view.findViewById(R.id.sign_out)
         event_btn       = view.findViewById(R.id.event)
 
@@ -79,10 +69,6 @@ class AccountFragment : Fragment() {
             i.putExtra("email", tv_userEmail.text)
             i.putExtra("tel", tv_userTel.text)
             startActivity(i)
-        }
-
-        report_btn.setOnClickListener {
-
         }
 
         event_btn.setOnClickListener {

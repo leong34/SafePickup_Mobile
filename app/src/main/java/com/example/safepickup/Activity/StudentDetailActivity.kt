@@ -2,26 +2,24 @@ package com.example.safepickup.Activity
 
 import android.app.ProgressDialog
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.applandeo.materialcalendarview.EventDay
-import com.example.safepickup.AdapterData.EventAdapter
 import com.example.safepickup.AdapterData.EventData
-import com.example.safepickup.AdapterData.EventRowAdapter
-import com.example.safepickup.AdapterData.EventRowData
 import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.FetchEventRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_event.*
-import kotlinx.android.synthetic.main.activity_guardian_list.*
+import kotlinx.android.synthetic.main.activity_student_detail.calendarView
+import kotlinx.android.synthetic.main.activity_student_detail.recycler_main
+import kotlinx.android.synthetic.main.activity_student_detail.tv_date
+import kotlinx.android.synthetic.main.activity_student_detail.tv_emptyEvent
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,19 +31,18 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
-
-class EventActivity : AppCompatActivity() {
-    val eventItemsBasedOnDate = HashMap<String, ArrayList<EventData>>()
-    val class_ids = HashMap<String, String>()
+class StudentDetailActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_event)
+        setContentView(R.layout.activity_student_detail)
         supportActionBar?.hide()
+        init()
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun init(){
         calendarView.setHeaderColor(R.color.black)
 
         calendarView.setOnDayClickListener { eventDay ->
@@ -55,9 +52,8 @@ class EventActivity : AppCompatActivity() {
             val stringDate = LocalDate.parse(clickedDate, dateFormatter).toString()
             showSelectedDateEvent(stringDate)
         }
-
-        fetchEvent()
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showSelectedDateEvent(selectedDate: String){
         val calendar = Calendar.getInstance()
@@ -78,34 +74,10 @@ class EventActivity : AppCompatActivity() {
         }
         Log.i("retrofit", "Checking is there any event $selectedDate")
 
-        if(dateString in eventItemsBasedOnDate) {
-            val class_event = HashMap<String, ArrayList<EventData>>()
-            for(event in eventItemsBasedOnDate[dateString]!!) {
-                if(event.class_id !in class_event){
-                    val temp:ArrayList<EventData> = ArrayList()
-                    temp.add(event)
-                    class_event[event.class_id] = temp
-                }
-                else{
-                    class_event[event.class_id]?.add(event)
-                }
-            }
+        if(true) {
 
-            val eventRowDataList: ArrayList<EventRowData> = ArrayList()
-            for(class_id in class_ids){
-                if(class_id.key in class_event) {
-                    val temp = EventRowData(class_id.value, class_event[class_id.key]!!)
-                    eventRowDataList.add(temp)
-                }
-            }
-
-            eventRowDataList.sort()
-
-            val eventRowAdapter = EventRowAdapter(eventRowDataList)
             recycler_main.visibility = View.VISIBLE
             tv_emptyEvent.visibility = View.GONE
-            recycler_main.adapter = eventRowAdapter
-            recycler_main.isNestedScrollingEnabled = false
         }
         else{
             recycler_main.visibility = View.GONE
@@ -113,7 +85,7 @@ class EventActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchEvent() {
+    private fun fetchStudentAttendance() {
         val gson = GsonBuilder().setLenient().create()
         val okHttpClient: OkHttpClient = OkHttpClient.Builder()
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -125,8 +97,8 @@ class EventActivity : AppCompatActivity() {
                 .client(okHttpClient)
                 .build()
         val service = retrofit.create(API::class.java)
-        val progressDialog = ProgressDialog.show(this@EventActivity, "", "Loading Event. Please wait...", true)
-        val call: Call<FetchEventRespond?>? = service.fetchEvent(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"))
+        val progressDialog = ProgressDialog.show(this@StudentDetailActivity, "", "Loading Event. Please wait...", true)
+        val call: Call<FetchEventRespond?>? = service.fetchStudentAttendance(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"), intent.getStringExtra("user_id").toString())
 
         call?.enqueue(object : Callback<FetchEventRespond?> {
             @RequiresApi(Build.VERSION_CODES.O)
@@ -137,46 +109,46 @@ class EventActivity : AppCompatActivity() {
                 val eventListFromRespond = eventRespond?.event
                 val events: MutableList<EventDay> = ArrayList()
 
-                for (event in eventListFromRespond!!) {
-                    val details = event.details
-                    var eventDataList: ArrayList<EventData> = ArrayList()
+//                for (event in eventListFromRespond!!) {
+//                    val details = event.details
+//                    var eventDataList: ArrayList<EventData> = ArrayList()
+//
+//                    if (details.isEmpty()) {
+//                        continue
+//                    }
+//
+//                    for (detail in details) {
+//                        val eventData = EventData(detail.date, detail.description, detail.title, event.classId, event.className)
+//                        eventDataList.add(eventData)
+//
+//                        val date = LocalDate.parse(detail.date, DateTimeFormatter.ISO_DATE)
+//                        val calendar: Calendar = Calendar.getInstance()
+//                        calendar.set(date.year, date.monthValue - 1, date.dayOfMonth)
+//                        events.add(EventDay(calendar, R.drawable.ic_circle_solid))
+//
+//                        if(event.classId !in class_ids) class_ids[event.classId] = event.className
+//
+//                        if (detail.date in eventItemsBasedOnDate) {
+//                            eventItemsBasedOnDate[detail.date]?.add(eventData)
+//                        } else {
+//                            val temp:ArrayList<EventData> = ArrayList()
+//                            temp.add(eventData)
+//                            eventItemsBasedOnDate[detail.date] = temp
+//                        }
+//                    }
+//                }
 
-                    if (details.isEmpty()) {
-                        continue
-                    }
-
-                    for (detail in details) {
-                        val eventData = EventData(detail.date, detail.description, detail.title, event.classId, event.className)
-                        eventDataList.add(eventData)
-
-                        val date = LocalDate.parse(detail.date, DateTimeFormatter.ISO_DATE)
-                        val calendar: Calendar = Calendar.getInstance()
-                        calendar.set(date.year, date.monthValue - 1, date.dayOfMonth)
-                        events.add(EventDay(calendar, R.drawable.ic_circle_solid))
-
-                        if(event.classId !in class_ids) class_ids[event.classId] = event.className
-
-                        if (detail.date in eventItemsBasedOnDate) {
-                            eventItemsBasedOnDate[detail.date]?.add(eventData)
-                        } else {
-                            val temp:ArrayList<EventData> = ArrayList()
-                            temp.add(eventData)
-                            eventItemsBasedOnDate[detail.date] = temp
-                        }
-                    }
-                }
-
-                calendarView.setEvents(events)
+//                calendarView.setEvents(events)
                 showSelectedDateEvent("")
 
                 Log.i("Retrofit", "succss " + eventRespond?.message.toString())
-                Toast.makeText(this@EventActivity, eventRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@StudentDetailActivity, eventRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchEventRespond?>, t: Throwable) {
                 progressDialog.dismiss()
                 Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@EventActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@StudentDetailActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })

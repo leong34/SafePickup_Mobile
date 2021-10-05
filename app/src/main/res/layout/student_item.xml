@@ -20,9 +20,9 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.8"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -48,17 +48,14 @@
                 android:textStyle="italic"
                 android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/iv_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.4"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_minus_circle_solid_25"
-                tools:visibility="gone" />
-
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_studentNext"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
 
     </LinearLayout>
 
