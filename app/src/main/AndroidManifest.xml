@@ -16,7 +16,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafePickup"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.StudentDetailActivity"></activity>
+        <service
+            android:name=".Firebase.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <activity android:name=".Activity.NoticeDetailActivity"></activity>
+        <activity android:name=".Activity.StudentDetailActivity" />
         <activity android:name=".Activity.EventActivity" />
         <activity android:name=".Activity.GuardianListActivity" />
         <activity android:name=".Activity.GuardianAddActivity" />
@@ -35,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.account.Activity_Listview" />
+<!--        <activity android:name=".ui.account.Activity_Listview" />-->
         <activity android:name=".Activity.MainActivity" />
 
         <provider

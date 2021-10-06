@@ -1,4 +1,3 @@
-
 package com.example.safepickup.Model;
 
 import javax.annotation.Generated;
@@ -20,9 +19,15 @@ public class Attendance {
     @SerializedName("check_out_time")
     @Expose
     private String checkOutTime;
+    @SerializedName("guardian_id")
+    @Expose
+    private String guardianId;
     @SerializedName("pick_up_by")
     @Expose
     private String pickUpBy;
+    @SerializedName("pick_up_internal_id")
+    @Expose
+    private String pickUpInternalId;
     @SerializedName("request_time")
     @Expose
     private String requestTime;
@@ -59,12 +64,28 @@ public class Attendance {
         this.checkOutTime = checkOutTime;
     }
 
+    public String getGuardianId() {
+        return guardianId;
+    }
+
+    public void setGuardianId(String guardianId) {
+        this.guardianId = guardianId;
+    }
+
     public String getPickUpBy() {
         return pickUpBy;
     }
 
     public void setPickUpBy(String pickUpBy) {
         this.pickUpBy = pickUpBy;
+    }
+
+    public String getPickUpInternalId() {
+        return pickUpInternalId;
+    }
+
+    public void setPickUpInternalId(String pickUpInternalId) {
+        this.pickUpInternalId = pickUpInternalId;
     }
 
     public String getRequestTime() {

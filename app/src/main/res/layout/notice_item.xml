@@ -10,31 +10,50 @@
     app:cardCornerRadius="20dp"
     app:cardElevation="5dp">
 
-    <LinearLayout
-        android:id="@+id/linearLayout7"
-        android:layout_width="250dp"
-        android:layout_height="125dp"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView_notice"
+            android:id="@+id/iv_viewed"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_circle_solid_red" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout7"
             android:layout_width="250dp"
-            android:layout_height="105dp"
-            android:contentDescription="Icon"
-            android:maxHeight="125dp"
-            android:visibility="visible"
-            app:srcCompat="@drawable/ic_news_removebg" />
+            android:layout_height="125dp"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/text_notice_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Notice 1"
-            android:textColor="@color/deep_grey"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/imageView_notice"
+                android:layout_width="250dp"
+                android:layout_height="105dp"
+                android:contentDescription="Icon"
+                android:maxHeight="125dp"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_news_removebg" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/text_notice_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notice 1"
+                android:textColor="@color/deep_grey"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

@@ -1,3 +1,4 @@
+
 package com.example.safepickup.Model;
 
 import javax.annotation.Generated;
@@ -5,30 +6,38 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("jsonschema2pojo")
-public class Notice {
+public class FetchNoticeDetailRespond {
 
-    @SerializedName("updated_at")
+    @SerializedName("message")
     @Expose
-    private String updatedAt;
+    private String message;
+    @SerializedName("authorized")
+    @Expose
+    private Boolean authorized;
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("notice_id")
+    @SerializedName("last_update")
     @Expose
-    private String noticeId;
+    private String lastUpdate;
     @SerializedName("description")
     @Expose
     private String description;
-    @SerializedName("viewed")
-    @Expose
-    private Boolean viewed;
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public String getMessage() {
+        return message;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Boolean getAuthorized() {
+        return authorized;
+    }
+
+    public void setAuthorized(Boolean authorized) {
+        this.authorized = authorized;
     }
 
     public String getTitle() {
@@ -39,12 +48,12 @@ public class Notice {
         this.title = title;
     }
 
-    public String getNoticeId() {
-        return noticeId;
+    public String getLastUpdate() {
+        return lastUpdate;
     }
 
-    public void setNoticeId(String noticeId) {
-        this.noticeId = noticeId;
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     public String getDescription() {
@@ -53,14 +62,6 @@ public class Notice {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Boolean getViewed() {
-        return viewed;
-    }
-
-    public void setViewed(Boolean viewed) {
-        this.viewed = viewed;
     }
 
 }

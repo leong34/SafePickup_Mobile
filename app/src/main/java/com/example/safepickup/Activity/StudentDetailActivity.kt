@@ -1,25 +1,24 @@
 package com.example.safepickup.Activity
 
 import android.app.ProgressDialog
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.applandeo.materialcalendarview.EventDay
-import com.example.safepickup.AdapterData.EventData
+import com.example.safepickup.AdapterData.AttendanceData
 import com.example.safepickup.Interface.API
-import com.example.safepickup.Model.FetchEventRespond
+import com.example.safepickup.Model.FetchStudentAttendanceRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.activity_event.*
-import kotlinx.android.synthetic.main.activity_student_detail.calendarView
-import kotlinx.android.synthetic.main.activity_student_detail.recycler_main
-import kotlinx.android.synthetic.main.activity_student_detail.tv_date
-import kotlinx.android.synthetic.main.activity_student_detail.tv_emptyEvent
+import kotlinx.android.synthetic.main.activity_student_detail.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,8 +30,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+
 
 class StudentDetailActivity : AppCompatActivity() {
+    val attendanceList: ArrayList<AttendanceData> = ArrayList()
+    val attendanceItemsBasedOnDate = HashMap<String, AttendanceData>()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +56,8 @@ class StudentDetailActivity : AppCompatActivity() {
             val stringDate = LocalDate.parse(clickedDate, dateFormatter).toString()
             showSelectedDateEvent(stringDate)
         }
+
+        fetchStudentAttendance()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -74,13 +80,20 @@ class StudentDetailActivity : AppCompatActivity() {
         }
         Log.i("retrofit", "Checking is there any event $selectedDate")
 
-        if(true) {
-
-            recycler_main.visibility = View.VISIBLE
+        if(dateString in attendanceItemsBasedOnDate) {
+            card_student.visibility = View.VISIBLE
             tv_emptyEvent.visibility = View.GONE
+
+            tv_studentName.text = intent.getStringExtra("student_name")
+            tv_attendance.text = attendanceItemsBasedOnDate[dateString]?.status
+            tv_checkInTime.text = if(attendanceItemsBasedOnDate[dateString]?.check_in_time!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.check_in_time
+            tv_checkOutTime.text = if(attendanceItemsBasedOnDate[dateString]?.check_out_time!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.check_out_time
+            tv_guardianId.text = if(attendanceItemsBasedOnDate[dateString]?.guardian_internal_id!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.guardian_internal_id
+            tv_guardianName.text = if(attendanceItemsBasedOnDate[dateString]?.pick_up_by!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.pick_up_by
+            tv_requestTime.text = if(attendanceItemsBasedOnDate[dateString]?.request_time!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.request_time
         }
         else{
-            recycler_main.visibility = View.GONE
+            card_student.visibility = View.GONE
             tv_emptyEvent.visibility = View.VISIBLE
         }
     }
@@ -98,54 +111,55 @@ class StudentDetailActivity : AppCompatActivity() {
                 .build()
         val service = retrofit.create(API::class.java)
         val progressDialog = ProgressDialog.show(this@StudentDetailActivity, "", "Loading Event. Please wait...", true)
-        val call: Call<FetchEventRespond?>? = service.fetchStudentAttendance(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"), intent.getStringExtra("user_id").toString())
+        val call: Call<FetchStudentAttendanceRespond?>? = service.fetchStudentAttendance(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"), intent.getStringExtra("student_id").toString())
 
-        call?.enqueue(object : Callback<FetchEventRespond?> {
+        call?.enqueue(object : Callback<FetchStudentAttendanceRespond?> {
             @RequiresApi(Build.VERSION_CODES.O)
-            override fun onResponse(call: Call<FetchEventRespond?>, response: Response<FetchEventRespond?>) {
+            override fun onResponse(call: Call<FetchStudentAttendanceRespond?>, response: Response<FetchStudentAttendanceRespond?>) {
                 progressDialog.dismiss()
 
-                val eventRespond: FetchEventRespond? = response.body()
-                val eventListFromRespond = eventRespond?.event
+                val attendanceRespond: FetchStudentAttendanceRespond? = response.body()
+                val attendanceListFromRespond = attendanceRespond?.attendance
                 val events: MutableList<EventDay> = ArrayList()
 
-//                for (event in eventListFromRespond!!) {
-//                    val details = event.details
-//                    var eventDataList: ArrayList<EventData> = ArrayList()
-//
-//                    if (details.isEmpty()) {
-//                        continue
-//                    }
-//
-//                    for (detail in details) {
-//                        val eventData = EventData(detail.date, detail.description, detail.title, event.classId, event.className)
-//                        eventDataList.add(eventData)
-//
-//                        val date = LocalDate.parse(detail.date, DateTimeFormatter.ISO_DATE)
-//                        val calendar: Calendar = Calendar.getInstance()
-//                        calendar.set(date.year, date.monthValue - 1, date.dayOfMonth)
-//                        events.add(EventDay(calendar, R.drawable.ic_circle_solid))
-//
-//                        if(event.classId !in class_ids) class_ids[event.classId] = event.className
-//
-//                        if (detail.date in eventItemsBasedOnDate) {
-//                            eventItemsBasedOnDate[detail.date]?.add(eventData)
-//                        } else {
-//                            val temp:ArrayList<EventData> = ArrayList()
-//                            temp.add(eventData)
-//                            eventItemsBasedOnDate[detail.date] = temp
-//                        }
-//                    }
-//                }
+                for (attendance in attendanceListFromRespond!!) {
+                    val attendanceData = AttendanceData(attendance.date, attendance.status, attendance.checkInTime, attendance.checkOutTime, attendance.pickUpBy, attendance.pickUpInternalId, attendance.requestTime)
+                    attendanceList.add(attendanceData)
+                    attendanceItemsBasedOnDate[attendance.date] = attendanceData
 
-//                calendarView.setEvents(events)
+                    val date = LocalDate.parse(attendance.date, DateTimeFormatter.ISO_DATE)
+                    val calendar: Calendar = Calendar.getInstance()
+                    calendar.set(date.year, date.monthValue - 1, date.dayOfMonth)
+
+                    val userIcon = ContextCompat.getDrawable(this@StudentDetailActivity, R.drawable.ic_baseline_person_24dp)
+                    lateinit var statusIcon: Drawable
+
+                    when (attendance.status) {
+                        "Absent" -> statusIcon = ContextCompat.getDrawable(this@StudentDetailActivity, R.drawable.ic_circle_solid_red)!!
+                        "Late" -> statusIcon = ContextCompat.getDrawable(this@StudentDetailActivity, R.drawable.ic_circle_solid_orange)!!
+                        "On Time" -> statusIcon = ContextCompat.getDrawable(this@StudentDetailActivity, R.drawable.ic_circle_solid_green)!!
+                    }
+
+                    if(attendance.guardianId == Utilities.getSafePref(this@StudentDetailActivity, "user_id")){
+                        val horizontalInset = (statusIcon!!.intrinsicWidth - userIcon!!.intrinsicWidth) / 2
+                        val finalDrawable = LayerDrawable(arrayOf<Drawable?>(statusIcon, userIcon))
+                        finalDrawable.setLayerInset(0, 0, 0, 0, userIcon!!.intrinsicHeight)
+                        finalDrawable.setLayerInset(1, horizontalInset, statusIcon!!.intrinsicHeight, horizontalInset, 0)
+
+                        events.add(EventDay(calendar, finalDrawable))
+                    }
+                    else
+                        events.add(EventDay(calendar, statusIcon))
+                }
+
+                calendarView.setEvents(events)
                 showSelectedDateEvent("")
 
-                Log.i("Retrofit", "succss " + eventRespond?.message.toString())
-                Toast.makeText(this@StudentDetailActivity, eventRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                Log.i("Retrofit", "succss " + attendanceRespond?.message.toString())
+                Toast.makeText(this@StudentDetailActivity, attendanceRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
-            override fun onFailure(call: Call<FetchEventRespond?>, t: Throwable) {
+            override fun onFailure(call: Call<FetchStudentAttendanceRespond?>, t: Throwable) {
                 progressDialog.dismiss()
                 Log.d("Retrofit", t.message.toString())
                 Toast.makeText(this@StudentDetailActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()

@@ -1,21 +1,12 @@
 package com.example.safepickup.ui.dashboard
 
-import android.Manifest
-import android.R.attr
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,9 +14,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,23 +28,16 @@ import com.example.safepickup.Interface.API
 import com.example.safepickup.Model.BasicRespond
 import com.example.safepickup.Model.FetchNoticesListRespond
 import com.example.safepickup.Model.FetchStudentsListRespond
-import com.example.safepickup.Model.InsertImageRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.fragment_dashboard.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -72,6 +53,7 @@ class DashboardFragment : Fragment() {
     var text_date: TextView? = null
     var text_time: TextView? = null
     val studentAdapter = StudentAdapter(studentList)
+    val noticeAdapter = NoticeAdapter(noticeList)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_dashboard, null)
@@ -226,10 +208,10 @@ class DashboardFragment : Fragment() {
                 noticeList.clear()
 
                 for (notice in noticeListFromRespond!!) {
-                    noticeList.add(NoticeData(notice.title, notice.noticeId, notice.description, notice.updatedAt))
+                    noticeList.add(NoticeData(notice.title, notice.noticeId, notice.description, notice.updatedAt, notice.viewed))
                 }
 
-                val noticeAdapter = NoticeAdapter(noticeList)
+                noticeList.sort()
 
                 noticeRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 noticeRecyclerView?.adapter = noticeAdapter
@@ -284,7 +266,6 @@ class DashboardFragment : Fragment() {
                 }
                 studentList.sort()
 
-//                val studentAdapter = StudentAdapter(studentList)
                 studentRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 studentRecyclerView?.adapter = studentAdapter
                 studentRecyclerView?.isNestedScrollingEnabled = false
@@ -379,5 +360,8 @@ class DashboardFragment : Fragment() {
             }
 
         })
+    }
+
+    private fun sendNotification(){
     }
 }
