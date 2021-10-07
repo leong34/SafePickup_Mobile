@@ -38,7 +38,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
@@ -57,16 +56,21 @@ class DashboardFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_dashboard, null)
+        return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val timeHandler = Handler(Looper.getMainLooper())
         val helper: SnapHelper = LinearSnapHelper()
 
-        val iv_checkIn: ImageView = root.findViewById(R.id.iv_checkIn)
-        val iv_absent: ImageView = root.findViewById(R.id.iv_absent)
-        val iv_request: ImageView = root.findViewById(R.id.iv_request)
-        val iv_selectDiselectAll: ImageView = root.findViewById(R.id.iv_selectDiselectAll)
+        val iv_checkIn: ImageView = view.findViewById(R.id.iv_checkIn)
+        val iv_absent: ImageView = view.findViewById(R.id.iv_absent)
+        val iv_request: ImageView = view.findViewById(R.id.iv_request)
+        val iv_selectDiselectAll: ImageView = view.findViewById(R.id.iv_selectDiselectAll)
 
-        text_date   = root.findViewById(R.id.text_date)
-        text_time   = root.findViewById(R.id.text_time)
+        text_date   = view.findViewById(R.id.text_date)
+        text_time   = view.findViewById(R.id.text_time)
 
 
         dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
@@ -146,13 +150,13 @@ class DashboardFragment : Fragment() {
             studentAdapter.selectAll()
         }
 
-        noticeRecyclerView = root.findViewById(R.id.recycler_notice)
-        studentRecyclerView = root.findViewById(R.id.recycler_student)
+        noticeRecyclerView = view.findViewById(R.id.recycler_notice)
+        studentRecyclerView = view.findViewById(R.id.recycler_student)
 
         helper.attachToRecyclerView(noticeRecyclerView)
         reloadList()
 
-        return root
+        Log.d("firebase", Utilities.getSafePref(requireContext(), "credential") + " | " + Utilities.getSafePref(requireContext(), "user_id") + " | " + Utilities.getSafePref(requireContext(), "face_id"))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -204,6 +208,10 @@ class DashboardFragment : Fragment() {
 
                 val noticesListRespond: FetchNoticesListRespond? = response.body()
                 val noticeListFromRespond = noticesListRespond?.notices
+
+                if(noticesListRespond?.authorized != true){
+                    startActivity(Utilities.logout(requireContext()))
+                }
 
                 noticeList.clear()
 
@@ -259,6 +267,10 @@ class DashboardFragment : Fragment() {
                 val studentsListRespond: FetchStudentsListRespond? = response.body()
                 val studentListFromRespond = studentsListRespond?.students
 
+                if(studentsListRespond?.authorized != true){
+                    startActivity(Utilities.logout(requireContext()))
+                }
+
                 studentList.clear()
 
                 for (student in studentListFromRespond!!) {
@@ -313,6 +325,10 @@ class DashboardFragment : Fragment() {
 
                 val studentsListRespond: BasicRespond? = response.body()
 
+                if(studentsListRespond?.authorized != true){
+                    startActivity(Utilities.logout(requireContext()))
+                }
+
                 Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
                 Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
                 reloadStudent()
@@ -347,6 +363,9 @@ class DashboardFragment : Fragment() {
                 progressDialog.dismiss()
 
                 val studentsListRespond: BasicRespond? = response.body()
+                if(studentsListRespond?.authorized != true){
+                    startActivity(Utilities.logout(requireContext()))
+                }
 
                 Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
                 Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
@@ -355,13 +374,9 @@ class DashboardFragment : Fragment() {
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
                 Toast.makeText(requireActivity(), "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
-    }
-
-    private fun sendNotification(){
     }
 }

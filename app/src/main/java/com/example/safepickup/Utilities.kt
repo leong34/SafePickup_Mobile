@@ -3,12 +3,8 @@ package com.example.safepickup
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 import com.example.safepickup.Activity.*
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.ktx.messaging
 
 class Utilities {
     companion object {
@@ -107,35 +103,6 @@ class Utilities {
             editor.clear()
             editor.commit()
             Toast.makeText(context, "clear pref", Toast.LENGTH_SHORT).show()
-        }
-
-        @JvmStatic
-        fun subscribeTopic(context: Context){
-//            FirebaseMessaging.getInstance().subscribeToTopic("News");
-//            FirebaseMessaging.getInstance().subscribeToTopic("Movies");
-//            FirebaseMessaging.getInstance().subscribeToTopic("etc");
-            Firebase.messaging.subscribeToTopic("weather")
-                    .addOnCompleteListener { task ->
-                        var msg = "Success subscribe to student"
-                        if (!task.isSuccessful) {
-                            msg = "Failed subscribe to student"
-                        }
-                        Log.d("subscribe", msg)
-                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                    }
-        }
-
-        @JvmStatic
-        fun unsubscribeTopic(context: Context){
-            Firebase.messaging.unsubscribeFromTopic("weather")
-                    .addOnCompleteListener { task ->
-                        var msg = "Success unsubscribe to student"
-                        if (!task.isSuccessful) {
-                            msg = "Failed unsubscribe to student"
-                        }
-                        Log.d("subscribe", msg)
-                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                    }
         }
     }
 }

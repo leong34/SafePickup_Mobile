@@ -116,10 +116,11 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
 
         btn = root.findViewById(R.id.button)
         btn?.setOnClickListener {
-            oriLng = 100.4748699
-            oriLat = 5.2751108
-            destLng = 100.2860238
-            destLat = 5.338936299999999
+            // remember to remove !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//            oriLng = 100.4748699
+//            oriLat = 5.2751108
+//            destLng = 100.2860238
+//            destLat = 5.338936299999999
 
             val intent = Utilities.intent_navigation(this.requireContext())
             intent.putExtra("oriLat", oriLat)
@@ -151,6 +152,10 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         call?.enqueue(object : Callback<FetchOrganizationAddressRespond?> {
             override fun onResponse(call: Call<FetchOrganizationAddressRespond?>, response: Response<FetchOrganizationAddressRespond?>) {
                 val organizationAddressRespond: FetchOrganizationAddressRespond? = response.body()
+                if(organizationAddressRespond?.authorized != true){
+                    startActivity(Utilities.logout(requireContext()))
+                }
+
                 organizationFullAddress = organizationAddressRespond?.fullAddress.toString()
                 Log.d("Retrofit", organizationFullAddress)
 
@@ -215,9 +220,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
     private val routesReqCallback = object : RoutesRequestCallback {
         override fun onRoutesReady(routes: List<DirectionsRoute>) {
             if (routes.isNotEmpty()) {
-                // Update a gradient route LineLayer's source with the Maps SDK. This will
-                // visually add/update the line on the map. All of this is being done
-                // directly with Maps SDK code and NOT the Navigation UI SDK.
                 mapboxMap?.getStyle {
                     val clickPointSource = it.getSourceAs<GeoJsonSource>("ROUTE_LINE_SOURCE_ID")
                     val routeLineString = LineString.fromPolyline(
@@ -226,15 +228,15 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                     )
                     clickPointSource?.setGeoJson(routeLineString)
                 }
+                btn?.isClickable = true
                 Toast.makeText(requireContext(), "Route found", Toast.LENGTH_LONG).show()
-//                Log.i("route call back ", "route request  %s$routes")
             } else {
+                btn?.isClickable = false
                 Toast.makeText(requireContext(), "No routes found", Toast.LENGTH_LONG).show()
             }
         }
 
         override fun onRoutesRequestFailure(throwable: Throwable, routeOptions: RouteOptions) {
-            Log.i("route call back ", "route request failure %s$throwable")
             Toast.makeText(requireContext(), "Request failed", Toast.LENGTH_LONG).show()
         }
 
@@ -249,10 +251,9 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
                         PackageManager.PERMISSION_GRANTED) {
                     if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
+
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
                     requireActivity()?.onBackPressed()
                 }
                 return
@@ -303,7 +304,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
 
             enableLocationComponent()
 
-            // Add the click and route sources
             it.addSource(GeoJsonSource("CLICK_SOURCE"))
             it.addSource(
                     GeoJsonSource(
@@ -312,7 +312,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                     )
             )
 
-            // Add the destination marker image
             it.addImage(
                     "ICON_ID",
                     BitmapUtils.getBitmapFromDrawable(
@@ -323,8 +322,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                     )!!
             )
 
-            // Add the LineLayer below the LocationComponent's bottom layer, which is the
-            // circular accuracy layer. The LineLayer will display the directions route.
             it.addLayerBelow(
                     LineLayer("ROUTE_LAYER_ID", "ROUTE_LINE_SOURCE_ID")
                             .withProperties(
@@ -335,15 +332,13 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                                             interpolate(
                                                     linear(),
                                                     lineProgress(),
-                                                    stop(0f, color(parseColor(ORIGIN_COLOR))),
-//                                                    stop(1f, color(parseColor(DESTINATION_COLOR)))
+                                                    stop(0f, color(parseColor(ORIGIN_COLOR)))
                                             )
                                     )
                             ),
                     "mapbox-location-shadow-layer"
             )
 
-            // Add the SymbolLayer to show the destination marker
             it.addLayerAbove(
                     SymbolLayer("CLICK_LAYER", "CLICK_SOURCE")
                             .withProperties(
@@ -353,7 +348,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
             )
         }
 
-//        getOrganizationGeocode(Utilities.getSafePref(requireContext(), "user_id"), Utilities.getSafePref(requireContext(), "credential"))
+        getOrganizationGeocode(Utilities.getSafePref(requireContext(), "user_id"), Utilities.getSafePref(requireContext(), "credential"))
     }
 
     @SuppressLint("MissingPermission")

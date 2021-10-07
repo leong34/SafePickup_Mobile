@@ -3,6 +3,7 @@
     package="com.example.safepickup">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,14 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafePickup"
         android:usesCleartextTraffic="true">
-        <service
-            android:name=".Firebase.MyFirebaseMessagingService">
+        <activity android:name=".TestNotificationActivity"></activity>
+
+        <service android:name=".Firebase.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.permission.RECEIVE" />
             </intent-filter>
         </service>
 
-        <activity android:name=".Activity.NoticeDetailActivity"></activity>
+        <activity android:name=".Activity.NoticeDetailActivity" />
         <activity android:name=".Activity.StudentDetailActivity" />
         <activity android:name=".Activity.EventActivity" />
         <activity android:name=".Activity.GuardianListActivity" />
@@ -42,8 +45,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-<!--        <activity android:name=".ui.account.Activity_Listview" />-->
+        </activity> <!-- <activity android:name=".ui.account.Activity_Listview" /> -->
         <activity android:name=".Activity.MainActivity" />
 
         <provider

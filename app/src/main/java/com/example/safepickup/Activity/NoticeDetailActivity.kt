@@ -56,6 +56,11 @@ class NoticeDetailActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val noticeDetail: FetchNoticeDetailRespond? = response.body()
+
+                if(noticeDetail?.authorized != true){
+                    startActivity(Utilities.logout(this@NoticeDetailActivity))
+                }
+
                 val dt = Instant.ofEpochSecond(noticeDetail?.lastUpdate!!.toLong())
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()

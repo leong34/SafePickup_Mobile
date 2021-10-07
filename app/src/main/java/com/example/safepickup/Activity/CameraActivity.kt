@@ -173,12 +173,13 @@ class CameraActivity : AppCompatActivity() {
                     if (!insertImageRespond?.faceId.toString().isEmpty()) {
                         Toast.makeText(applicationContext, "Succss " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
                         startActivity(Utilities.intent_mainActivity(this@CameraActivity))
+                        Utilities.setFaceId(this@CameraActivity, insertImageRespond?.faceId.toString())
                         finish()
                     } else {
                         Toast.makeText(applicationContext, "Please try again, " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(applicationContext, "Caution " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
+                    startActivity(Utilities.logout(this@CameraActivity))
                 }
             }
 

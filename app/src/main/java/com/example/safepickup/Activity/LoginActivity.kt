@@ -1,6 +1,7 @@
 package com.example.safepickup.Activity
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +19,8 @@ import com.example.safepickup.Model.CheckCredentialRespond
 import com.example.safepickup.Model.LoginRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.OkHttpClient
@@ -31,10 +34,6 @@ import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
     val TAG:String = "Login Activity"
-//    lateinit var et_loginEmail:EditText
-//    lateinit var et_loginPassword:EditText
-//    lateinit var iv_PasswordVisibility: ImageView
-//    lateinit var btn_login:Button
 
     var gson = GsonBuilder()
             .setLenient()
@@ -52,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
     val service = retrofit.create(API::class.java)
+    lateinit var messagingToken: String
 
     private val mTextWatcher: TextWatcher = object : TextWatcher {
         override fun beforeTextChanged(charSequence: CharSequence, i: Int, i2: Int, i3: Int) {}
@@ -73,11 +73,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         supportActionBar?.hide()
-
-//        et_loginEmail           = findViewById(R.id.et_loginEmail)
-//        et_loginPassword        = findViewById(R.id.et_loginPassword)
-//        iv_PasswordVisibility   = findViewById(R.id.iv_PasswordVisibility)
-//        btn_login               = findViewById(R.id.btn_update)
 
         et_loginEmail.addTextChangedListener(mTextWatcher)
         et_loginPassword.addTextChangedListener(mTextWatcher)
@@ -101,17 +96,35 @@ class LoginActivity : AppCompatActivity() {
 
         authorized(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"))
         checkFieldsForEmptyValues()
+        getFirebaseToken()
     }
 
     override fun onBackPressed() {
         finishAffinity()
     }
 
+    fun getFirebaseToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("Firebase", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            messagingToken = token
+            Log.d("Firebase", messagingToken)
+            Toast.makeText(this, messagingToken, Toast.LENGTH_SHORT).show()
+        })
+    }
+
     fun loggingIn(email: String, password: String) {
         val progressDialog = ProgressDialog.show(this@LoginActivity, "",
                 "Loading. Please wait...", true)
 
-        val call: Call<LoginRespond?>? = service.login(email, password)
+        val call: Call<LoginRespond?>? = service.login(email, password, messagingToken)
 
         call?.enqueue(object : Callback<LoginRespond?> {
             override fun onFailure(call: Call<LoginRespond?>, t: Throwable) {

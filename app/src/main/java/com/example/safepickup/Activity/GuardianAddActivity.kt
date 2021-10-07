@@ -239,6 +239,11 @@ class GuardianAddActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val studentsListRespond: FetchStudentsListRespond? = response.body()
+
+                if(studentsListRespond?.authorized != true){
+                    startActivity(Utilities.logout(this@GuardianAddActivity))
+                }
+
                 val studentListFromRespond = studentsListRespond?.students
 
                 studentList.clear()
@@ -285,6 +290,9 @@ class GuardianAddActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val emailRespond: FetchAllEmailRespond? = response.body()
+                if(emailRespond?.authorized != true){
+                    startActivity(Utilities.logout(this@GuardianAddActivity))
+                }
 
                 emailList = emailRespond?.userEmails as ArrayList<String>
 
@@ -313,7 +321,7 @@ class GuardianAddActivity : AppCompatActivity() {
                 .client(okHttpClient)
                 .build()
         val service = retrofit.create(API::class.java)
-        val progressDialog = ProgressDialog.show(this@GuardianAddActivity, "", "Adding crew. Please wait...", true)
+        val progressDialog = ProgressDialog.show(this@GuardianAddActivity, "", "Adding new guardian. Please wait...", true)
         val call: Call<BasicRespond?>? = service.addFamilyMember(
                 Utilities.getSafePref(this,"user_id"),
                 Utilities.getSafePref(this,"credential"),
@@ -330,6 +338,9 @@ class GuardianAddActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val respond: BasicRespond? = response.body()
+                if(respond?.authorized != true){
+                    startActivity(Utilities.logout(this@GuardianAddActivity))
+                }
 
                 Log.i("Retrofit", "succss " + respond?.message.toString())
                 Toast.makeText(this@GuardianAddActivity, respond?.message.toString(), Toast.LENGTH_SHORT).show()

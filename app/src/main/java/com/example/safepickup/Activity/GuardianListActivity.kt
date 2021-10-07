@@ -101,6 +101,11 @@ class GuardianListActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val guardiansListRespond: FetchGuardiansListRespond? = response.body()
+
+                if(guardiansListRespond?.authorized != true){
+                    startActivity(Utilities.logout(this@GuardianListActivity))
+                }
+
                 val guardiansListFromRespond = guardiansListRespond?.guardians
 
                 guardianList.clear()
@@ -161,6 +166,10 @@ class GuardianListActivity : AppCompatActivity() {
             override fun onResponse(call: Call<BasicRespond?>, response: Response<BasicRespond?>) {
                 progressDialog.dismiss()
                 val basicRespond: BasicRespond? = response.body()
+
+                if(basicRespond?.authorized != true){
+                    startActivity(Utilities.logout(this@GuardianListActivity))
+                }
 
                 Log.i("Retrofit", "succss " + basicRespond?.message.toString())
                 Toast.makeText(this@GuardianListActivity, basicRespond?.message.toString(), Toast.LENGTH_SHORT).show()

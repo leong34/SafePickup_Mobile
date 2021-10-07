@@ -136,6 +136,11 @@ class EventActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val eventRespond: FetchEventRespond? = response.body()
+
+                if(eventRespond?.authorized != true){
+                    startActivity(Utilities.logout(this@EventActivity))
+                }
+
                 val eventListFromRespond = eventRespond?.event
                 val events: MutableList<EventDay> = ArrayList()
 

@@ -1,6 +1,7 @@
 package com.example.safepickup.Activity
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,6 +25,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,8 +204,15 @@ class SettingActivity : AppCompatActivity() {
 
                 val userDetail: BasicRespond? = response.body()
 
-                if(userDetail?.message.toString() != "Failed due to wrong password")
+                if (userDetail?.authorized != true) {
+                    startActivity(Utilities.logout(this@SettingActivity))
+                }
+
+                if (userDetail?.message.toString() != "Failed due to wrong password") {
+                    setResult(RESULT_OK, Intent())
                     finish()
+                }
+
 
                 Log.i("Retrofit", "succss " + userDetail?.message.toString())
                 Toast.makeText(this@SettingActivity, userDetail?.message.toString(), Toast.LENGTH_SHORT).show()

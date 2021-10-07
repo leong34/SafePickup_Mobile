@@ -1,6 +1,8 @@
 package com.example.safepickup.ui.account
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.example.safepickup.Interface.API
+import com.example.safepickup.Model.BasicRespond
 import com.example.safepickup.Model.FetchUserDetailRespond
 import com.example.safepickup.R
 import com.example.safepickup.Utilities
@@ -22,6 +25,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
 
 class AccountFragment : Fragment() {
     private lateinit var guardian_btn: CardView
@@ -68,7 +72,7 @@ class AccountFragment : Fragment() {
             i.putExtra("user_inner_id", tv_userId.text)
             i.putExtra("email", tv_userEmail.text)
             i.putExtra("tel", tv_userTel.text)
-            startActivity(i)
+            startActivityForResult(i, 1235)
         }
 
         event_btn.setOnClickListener {
@@ -76,9 +80,8 @@ class AccountFragment : Fragment() {
         }
 
         signout_btn.setOnClickListener {
-            startActivity(Utilities.logout(requireContext()))
+            unsetMessageToken()
         }
-
         fetchUserDetail()
     }
 
@@ -102,14 +105,17 @@ class AccountFragment : Fragment() {
                 progressDialog.dismiss()
 
                 val userDetail: FetchUserDetailRespond? = response.body()
+                if (userDetail?.authorized != true) {
+                    startActivity(Utilities.logout(requireContext()))
+                }
 
-                tv_fullName.text    = "Hi, ${userDetail?.lastName} ${userDetail?.firstName}"
-                tv_userId.text      = userDetail?.userInnerId
-                tv_userEmail.text   = userDetail?.email
-                tv_userTel.text     = userDetail?.telNum
+                tv_fullName.text = "Hi, ${userDetail?.lastName} ${userDetail?.firstName}"
+                tv_userId.text = userDetail?.userInnerId
+                tv_userEmail.text = userDetail?.email
+                tv_userTel.text = userDetail?.telNum
 
                 first_name = userDetail?.firstName.toString()
-                last_name  = userDetail?.lastName.toString()
+                last_name = userDetail?.lastName.toString()
 
                 Log.i("Retrofit", "succss " + userDetail?.message.toString())
                 Toast.makeText(requireActivity(), userDetail?.message.toString(), Toast.LENGTH_SHORT).show()
@@ -122,4 +128,45 @@ class AccountFragment : Fragment() {
             }
         })
     }
+
+    fun unsetMessageToken() {
+        val gson = GsonBuilder().setLenient().create()
+        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build()
+        val retrofit = Retrofit.Builder()
+                .baseUrl("http://192.168.1.7")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(okHttpClient)
+                .build()
+        val service = retrofit.create(API::class.java)
+        val progressDialog = ProgressDialog.show(this.requireActivity(), "", "Logging out. Please wait...", true)
+
+        val call: Call<BasicRespond?>? = service.logout(Utilities.getSafePref(requireContext(), "user_id"))
+
+        call?.enqueue(object : Callback<BasicRespond?> {
+            override fun onResponse(call: Call<BasicRespond?>, response: Response<BasicRespond?>) {
+                progressDialog.dismiss()
+                val noticesListRespond: BasicRespond? = response.body()
+                startActivity(Utilities.logout(requireContext()))
+                Log.i("Retrofit", "succss " + noticesListRespond?.message.toString())
+            }
+
+            override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
+                progressDialog.dismiss()
+                Log.d("Retrofit", t.message.toString())
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1235) {
+            if (resultCode == Activity.RESULT_OK) {
+                fetchUserDetail()
+            }
+        }
+    }
+
 }

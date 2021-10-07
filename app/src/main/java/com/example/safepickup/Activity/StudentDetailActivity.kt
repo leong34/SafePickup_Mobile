@@ -110,7 +110,7 @@ class StudentDetailActivity : AppCompatActivity() {
                 .client(okHttpClient)
                 .build()
         val service = retrofit.create(API::class.java)
-        val progressDialog = ProgressDialog.show(this@StudentDetailActivity, "", "Loading Event. Please wait...", true)
+        val progressDialog = ProgressDialog.show(this@StudentDetailActivity, "", "Loading Student. Please wait...", true)
         val call: Call<FetchStudentAttendanceRespond?>? = service.fetchStudentAttendance(Utilities.getSafePref(this, "user_id"), Utilities.getSafePref(this, "credential"), intent.getStringExtra("student_id").toString())
 
         call?.enqueue(object : Callback<FetchStudentAttendanceRespond?> {
@@ -119,6 +119,11 @@ class StudentDetailActivity : AppCompatActivity() {
                 progressDialog.dismiss()
 
                 val attendanceRespond: FetchStudentAttendanceRespond? = response.body()
+
+                if (attendanceRespond?.authorized != true) {
+                    startActivity(Utilities.logout(this@StudentDetailActivity))
+                }
+
                 val attendanceListFromRespond = attendanceRespond?.attendance
                 val events: MutableList<EventDay> = ArrayList()
 

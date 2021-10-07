@@ -165,10 +165,13 @@ class FaceScanActivity : AppCompatActivity() {
                 if (insertImageRespond?.authorized == true) {
                     Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
                     Log.d("Retrofit", insertImageRespond?.message.toString())
+                    deleteImage(fromFile)
                     Toast.makeText(applicationContext, "Success " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
                     val intent:Intent = Intent()
                     setResult(RESULT_OK, intent)
                     finish()
+                } else {
+                    startActivity(Utilities.logout(this@FaceScanActivity))
                 }
             }
 
@@ -222,4 +225,15 @@ class FaceScanActivity : AppCompatActivity() {
         }
     }
 
+    //new added
+    private fun deleteImage(uri: Uri?){
+        val fdelete: File = File(uri?.getPath())
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                Log.i("file Deleted :", uri?.getPath().toString())
+            } else {
+                Log.i("file not Deleted :", uri?.getPath().toString())
+            }
+        }
+    }
 }

@@ -14,7 +14,14 @@ interface API {
     open fun login(
             @Field("email") email: String,
             @Field("password") password: String,
+            @Field("message_token") message_token: String,
     ): Call<LoginRespond?>?
+
+    @FormUrlEncoded
+    @POST("/fyp_web/API/logout.php")
+    open fun logout(
+            @Field("user_id") user_id: String
+    ): Call<BasicRespond?>?
 
     @FormUrlEncoded
     @POST("/fyp_web/API/checkCredential.php")
