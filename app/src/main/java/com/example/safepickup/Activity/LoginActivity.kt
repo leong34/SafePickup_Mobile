@@ -109,14 +109,8 @@ class LoginActivity : AppCompatActivity() {
                 Log.w("Firebase", "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
-
-            // Get new FCM registration token
             val token = task.result
-
-            // Log and toast
             messagingToken = token
-            Log.d("Firebase", messagingToken)
-            Toast.makeText(this, messagingToken, Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -129,16 +123,11 @@ class LoginActivity : AppCompatActivity() {
         call?.enqueue(object : Callback<LoginRespond?> {
             override fun onFailure(call: Call<LoginRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(applicationContext, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(call: Call<LoginRespond?>, response: Response<LoginRespond?>) {
                 progressDialog.dismiss()
                 val loginRespond: LoginRespond? = response.body()
-
-                Log.i("Retrofit", "succss " + loginRespond?.message.toString())
-                Toast.makeText(applicationContext, loginRespond?.message.toString(), Toast.LENGTH_SHORT).show()
 
                 if (loginRespond?.data?.userId?.isEmpty() == false) {
                     Utilities.setSafePref(this@LoginActivity,
@@ -176,14 +165,10 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(Utilities.intent_mainActivity(this@LoginActivity))
                     }
                 }
-                Log.i("Retrofit", "succss " + credentialRespond?.message.toString())
-                Toast.makeText(applicationContext, credentialRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<CheckCredentialRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(applicationContext, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

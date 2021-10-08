@@ -68,15 +68,10 @@ class NoticeDetailActivity : AppCompatActivity() {
                 tv_noticeTitle.text = noticeDetail?.title
                 tv_noticeDescription.text = noticeDetail?.description
                 tv_lastUpdate.text = "" + dt.dayOfMonth + "-" + (dt.monthValue)+"-"+dt.year
-
-                Log.i("Retrofit", "succss " + noticeDetail?.message.toString())
-                Toast.makeText(this@NoticeDetailActivity, noticeDetail?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchNoticeDetailRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@NoticeDetailActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })

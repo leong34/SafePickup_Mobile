@@ -59,7 +59,6 @@ class GuardianAdapter(private val guardianDataList: ArrayList<GuardianData>): Re
         }
 
         holder.iv_guardianNext?.setOnClickListener {
-            Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show()
             if(holder.linear_student?.visibility == View.GONE) {
                 holder.iv_guardianNext?.rotation = -90.0f
                 holder.linear_student?.visibility = View.VISIBLE

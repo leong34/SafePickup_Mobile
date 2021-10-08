@@ -1,19 +1,12 @@
 package com.example.safepickup.Activity
 
-import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.applandeo.materialcalendarview.EventDay
-import com.example.safepickup.AdapterData.EventAdapter
 import com.example.safepickup.AdapterData.EventData
 import com.example.safepickup.AdapterData.EventRowAdapter
 import com.example.safepickup.AdapterData.EventRowData
@@ -78,7 +71,7 @@ class EventActivity : AppCompatActivity() {
             tv_date.text = "" + selectedDay.dayOfMonth + "-" + (selectedDay.monthValue)+"-"+selectedDay.year
             dateString = selectedDate
         }
-        Log.i("retrofit", "Checking is there any event $selectedDate")
+
 
         if(dateString in eventItemsBasedOnDate) {
             val class_event = HashMap<String, ArrayList<EventData>>()
@@ -153,7 +146,7 @@ class EventActivity : AppCompatActivity() {
                     }
 
                     for (detail in details) {
-                        val eventData = EventData(detail.date, detail.description, detail.title, event.classId, event.className)
+                        val eventData = EventData(detail.date, detail.description, detail.title, event.classId, event.className, event.studentInClass)
                         eventDataList.add(eventData)
 
                         val date = LocalDate.parse(detail.date, DateTimeFormatter.ISO_DATE)
@@ -175,15 +168,10 @@ class EventActivity : AppCompatActivity() {
 
                 calendarView.setEvents(events)
                 showSelectedDateEvent("")
-
-                Log.i("Retrofit", "succss " + eventRespond?.message.toString())
-                Toast.makeText(this@EventActivity, eventRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchEventRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@EventActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })

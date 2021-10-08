@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SafePickup"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TestNotificationActivity"></activity>
+        <activity android:name=".Activity.EventDetailActivity"></activity>
+        <activity android:name=".TestNotificationActivity" />
 
         <service android:name=".Firebase.MyFirebaseMessagingService">
             <intent-filter>

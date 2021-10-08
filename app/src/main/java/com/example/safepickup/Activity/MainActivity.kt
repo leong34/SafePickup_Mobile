@@ -23,4 +23,8 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         NavigationUI.setupWithNavController(navView!!, navController)
     }
+
+    override fun onBackPressed() {
+        finishAffinity()
+    }
 }

@@ -231,15 +231,10 @@ class DashboardFragment : Fragment() {
                     notice_empty_view.visibility = View.GONE
                     noticeRecyclerView?.visibility = View.VISIBLE
                 }
-
-                Log.i("Retrofit", "succss " + noticesListRespond?.message.toString())
-                Toast.makeText(requireActivity(), noticesListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchNoticesListRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(requireActivity(), "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -289,16 +284,10 @@ class DashboardFragment : Fragment() {
                     student_empty_view.visibility = View.GONE
                     studentRecyclerView?.visibility = View.VISIBLE
                 }
-
-
-                Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
-                Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchStudentsListRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(requireActivity(), "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -328,16 +317,11 @@ class DashboardFragment : Fragment() {
                 if(studentsListRespond?.authorized != true){
                     startActivity(Utilities.logout(requireContext()))
                 }
-
-                Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
-                Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
                 reloadStudent()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(requireActivity(), "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -366,15 +350,11 @@ class DashboardFragment : Fragment() {
                 if(studentsListRespond?.authorized != true){
                     startActivity(Utilities.logout(requireContext()))
                 }
-
-                Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
-                Toast.makeText(requireActivity(), studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
                 reloadStudent()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Toast.makeText(requireActivity(), "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })

@@ -116,15 +116,10 @@ class AccountFragment : Fragment() {
 
                 first_name = userDetail?.firstName.toString()
                 last_name = userDetail?.lastName.toString()
-
-                Log.i("Retrofit", "succss " + userDetail?.message.toString())
-                Toast.makeText(requireActivity(), userDetail?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchUserDetailRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(requireActivity(), "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

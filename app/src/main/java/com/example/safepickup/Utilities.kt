@@ -15,7 +15,6 @@ class Utilities {
 
         @JvmStatic
         fun intent_setupFaceId(context: Context): Intent {
-            Toast.makeText(context, "Setup of face id is required for first time user", Toast.LENGTH_SHORT).show()
             return Intent(context, CameraActivity::class.java)
         }
 
@@ -52,6 +51,11 @@ class Utilities {
         @JvmStatic
         fun intent_Event(context: Context): Intent {
             return Intent(context, EventActivity::class.java)
+        }
+
+        @JvmStatic
+        fun intent_EventDetail(context: Context): Intent {
+            return Intent(context, EventDetailActivity::class.java)
         }
 
         @JvmStatic
@@ -102,7 +106,6 @@ class Utilities {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.clear()
             editor.commit()
-            Toast.makeText(context, "clear pref", Toast.LENGTH_SHORT).show()
         }
     }
 }

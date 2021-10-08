@@ -79,7 +79,6 @@ class GuardianAddActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please make sure at least 1 student is chosen", Toast.LENGTH_LONG).show()
             }
             else{
-                Toast.makeText(this, "Adding", Toast.LENGTH_LONG).show()
                 addFamilyMember(
                         et_lastName.text.toString(),
                         et_firstName.text.toString(),
@@ -256,15 +255,10 @@ class GuardianAddActivity : AppCompatActivity() {
                 recycler_student.layoutManager = LinearLayoutManager(this@GuardianAddActivity, RecyclerView.VERTICAL, false)
                 recycler_student.adapter = studentAdapter
                 recycler_student.isNestedScrollingEnabled = false
-
-                Log.i("Retrofit", "succss " + studentsListRespond?.message.toString())
-                Toast.makeText(this@GuardianAddActivity, studentsListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchStudentsListRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@GuardianAddActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -295,15 +289,10 @@ class GuardianAddActivity : AppCompatActivity() {
                 }
 
                 emailList = emailRespond?.userEmails as ArrayList<String>
-
-                Log.i("Retrofit", "succss " + emailRespond?.message.toString())
-                Toast.makeText(this@GuardianAddActivity, emailRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchAllEmailRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@GuardianAddActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -341,9 +330,6 @@ class GuardianAddActivity : AppCompatActivity() {
                 if(respond?.authorized != true){
                     startActivity(Utilities.logout(this@GuardianAddActivity))
                 }
-
-                Log.i("Retrofit", "succss " + respond?.message.toString())
-                Toast.makeText(this@GuardianAddActivity, respond?.message.toString(), Toast.LENGTH_SHORT).show()
                 val intent: Intent = Intent()
                 setResult(RESULT_OK, intent)
                 finish()
@@ -351,8 +337,6 @@ class GuardianAddActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@GuardianAddActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })

@@ -133,15 +133,10 @@ class GuardianListActivity : AppCompatActivity() {
                     guardian_empty_view.visibility = View.GONE
                     recycler_guardianList.visibility = View.VISIBLE
                 }
-
-                Log.i("Retrofit", "succss " + guardiansListRespond?.message.toString())
-                Toast.makeText(this@GuardianListActivity, guardiansListRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchGuardiansListRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@GuardianListActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -171,16 +166,11 @@ class GuardianListActivity : AppCompatActivity() {
                     startActivity(Utilities.logout(this@GuardianListActivity))
                 }
 
-                Log.i("Retrofit", "succss " + basicRespond?.message.toString())
-                Toast.makeText(this@GuardianListActivity, basicRespond?.message.toString(), Toast.LENGTH_SHORT).show()
-
                 fetchGuardianList()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@GuardianListActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

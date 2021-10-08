@@ -212,16 +212,10 @@ class SettingActivity : AppCompatActivity() {
                     setResult(RESULT_OK, Intent())
                     finish()
                 }
-
-
-                Log.i("Retrofit", "succss " + userDetail?.message.toString())
-                Toast.makeText(this@SettingActivity, userDetail?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@SettingActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

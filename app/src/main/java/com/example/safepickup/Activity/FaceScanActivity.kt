@@ -93,10 +93,8 @@ class FaceScanActivity : AppCompatActivity() {
                     if ((ContextCompat.checkSelfPermission(this,
                                     Manifest.permission.CAMERA) ===
                                     PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 return
@@ -166,7 +164,6 @@ class FaceScanActivity : AppCompatActivity() {
                     Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
                     Log.d("Retrofit", insertImageRespond?.message.toString())
                     deleteImage(fromFile)
-                    Toast.makeText(applicationContext, "Success " + insertImageRespond?.message.toString(), Toast.LENGTH_SHORT).show()
                     val intent:Intent = Intent()
                     setResult(RESULT_OK, intent)
                     finish()
@@ -177,8 +174,6 @@ class FaceScanActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<RequestPickUpStudentsRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(applicationContext, "Please try again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

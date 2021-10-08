@@ -5,9 +5,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -78,13 +76,13 @@ class StudentDetailActivity : AppCompatActivity() {
             tv_date.text = "" + selectedDay.dayOfMonth + "-" + (selectedDay.monthValue)+"-"+selectedDay.year
             dateString = selectedDate
         }
-        Log.i("retrofit", "Checking is there any event $selectedDate")
 
         if(dateString in attendanceItemsBasedOnDate) {
             card_student.visibility = View.VISIBLE
-            tv_emptyEvent.visibility = View.GONE
+            tv_empty_Attendance.visibility = View.GONE
 
             tv_studentName.text = intent.getStringExtra("student_name")
+            tv_className.text = intent.getStringExtra("class_name")
             tv_attendance.text = attendanceItemsBasedOnDate[dateString]?.status
             tv_checkInTime.text = if(attendanceItemsBasedOnDate[dateString]?.check_in_time!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.check_in_time
             tv_checkOutTime.text = if(attendanceItemsBasedOnDate[dateString]?.check_out_time!!.isEmpty()) "-" else attendanceItemsBasedOnDate[dateString]?.check_out_time
@@ -94,7 +92,7 @@ class StudentDetailActivity : AppCompatActivity() {
         }
         else{
             card_student.visibility = View.GONE
-            tv_emptyEvent.visibility = View.VISIBLE
+            tv_empty_Attendance.visibility = View.VISIBLE
         }
     }
 
@@ -159,15 +157,10 @@ class StudentDetailActivity : AppCompatActivity() {
 
                 calendarView.setEvents(events)
                 showSelectedDateEvent("")
-
-                Log.i("Retrofit", "succss " + attendanceRespond?.message.toString())
-                Toast.makeText(this@StudentDetailActivity, attendanceRespond?.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<FetchStudentAttendanceRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(this@StudentDetailActivity, "Please Try Again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
 
         })

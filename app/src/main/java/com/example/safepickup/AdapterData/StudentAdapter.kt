@@ -77,6 +77,7 @@ class StudentAdapter(private val studentDataList: ArrayList<StudentData>, privat
                 val intent = Utilities.intent_studentDetail(context!!)
                 intent.putExtra("student_id", studentDataList[position].student_id)
                 intent.putExtra("student_name", studentDataList[position].full_name)
+                intent.putExtra("class_name", studentDataList[position].class_name)
                 context?.startActivity(intent)
             }
         }

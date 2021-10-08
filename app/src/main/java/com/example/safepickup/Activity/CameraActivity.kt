@@ -108,13 +108,9 @@ class CameraActivity : AppCompatActivity() {
             1 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
                         PackageManager.PERMISSION_GRANTED) {
-                    if ((ContextCompat.checkSelfPermission(this,
-                                    Manifest.permission.CAMERA) ===
-                                    PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                    if ((ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) === PackageManager.PERMISSION_GRANTED)) {
                     }
                 } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 return
@@ -165,13 +161,10 @@ class CameraActivity : AppCompatActivity() {
                 val insertImageRespond: InsertImageRespond? = response.body()
 
                 if (insertImageRespond?.authorized == true) {
-                    Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
-                    Log.d("Retrofit", insertImageRespond?.message.toString())
 
                     deleteImage(fromFile)
 
                     if (!insertImageRespond?.faceId.toString().isEmpty()) {
-                        Toast.makeText(applicationContext, "Succss " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
                         startActivity(Utilities.intent_mainActivity(this@CameraActivity))
                         Utilities.setFaceId(this@CameraActivity, insertImageRespond?.faceId.toString())
                         finish()
@@ -185,8 +178,6 @@ class CameraActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<InsertImageRespond?>, t: Throwable) {
                 progressDialog.dismiss()
-                Log.d("Retrofit", t.message.toString())
-                Toast.makeText(applicationContext, "Please try again " + t.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }

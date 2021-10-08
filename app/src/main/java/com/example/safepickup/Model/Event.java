@@ -15,6 +15,9 @@ public class Event {
     @SerializedName("class_name")
     @Expose
     private String className;
+    @SerializedName("student_in_class")
+    @Expose
+    private List<String> studentInClass = null;
     @SerializedName("details")
     @Expose
     private List<Detail> details = null;
@@ -33,6 +36,14 @@ public class Event {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public List<String> getStudentInClass() {
+        return studentInClass;
+    }
+
+    public void setStudentInClass(List<String> studentInClass) {
+        this.studentInClass = studentInClass;
     }
 
     public List<Detail> getDetails() {

@@ -79,11 +79,9 @@ class CheckInActivity : AppCompatActivity() {
                     if ((ContextCompat.checkSelfPermission(this,
                                     Manifest.permission.CAMERA) ===
                                     PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
                         startScanning()
                     }
                 } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 return
