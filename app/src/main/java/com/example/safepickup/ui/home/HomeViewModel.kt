@@ -1,12 +1,10 @@
-package com.example.safepickup.ui.dashboard
+package com.example.safepickup.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DashboardViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
     private var calendar: Calendar? = null
     private var dateFormat: SimpleDateFormat? = null
     private var date: String? = null

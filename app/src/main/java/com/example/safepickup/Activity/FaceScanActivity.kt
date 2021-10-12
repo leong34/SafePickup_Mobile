@@ -120,6 +120,12 @@ class FaceScanActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val file = File(currentPhotoPath)
+        deleteImage(Uri.fromFile(file))
+    }
+
     private fun sendRequest(name: String, fromFile: Uri?, student_ids: ArrayList<String>) {
         var gson = GsonBuilder()
                 .setLenient()
@@ -163,10 +169,15 @@ class FaceScanActivity : AppCompatActivity() {
                 if (insertImageRespond?.authorized == true) {
                     Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
                     Log.d("Retrofit", insertImageRespond?.message.toString())
-                    deleteImage(fromFile)
-                    val intent:Intent = Intent()
-                    setResult(RESULT_OK, intent)
-                    finish()
+
+                    if(insertImageRespond.faceIdVerified == true){
+                        deleteImage(fromFile)
+                        val intent:Intent = Intent()
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }else{
+                        Toast.makeText(this@FaceScanActivity, insertImageRespond.rekogMessage, Toast.LENGTH_LONG).show()
+                    }
                 } else {
                     startActivity(Utilities.logout(this@FaceScanActivity))
                 }

@@ -142,6 +142,9 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(Utilities.intent_mainActivity(this@LoginActivity))
                     }
                 }
+                else{
+                    Toast.makeText(this@LoginActivity, loginRespond?.message, Toast.LENGTH_LONG).show()
+                }
             }
         })
     }

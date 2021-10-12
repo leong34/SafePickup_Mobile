@@ -83,7 +83,6 @@ class NavigationActivity : AppCompatActivity(), OnNavigationReadyCallback, Navig
                 val response = response
 
                 val currentRoute = response.body()!!.routes()[0]
-//
                 val optionsBuilder = NavigationViewOptions.builder(this@NavigationActivity)
                 optionsBuilder.navigationListener(this@NavigationActivity)
                 optionsBuilder.directionsRoute(currentRoute)

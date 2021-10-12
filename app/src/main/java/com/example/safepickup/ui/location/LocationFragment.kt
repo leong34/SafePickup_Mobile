@@ -201,11 +201,8 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
                     }
                 }, { error ->
                     error.printStackTrace()
-                    Log.i("Volley", error.printStackTrace().toString())
                 })
                 requestQueue?.add(geoRequest)
-                Log.i("Volley", requestQueue.toString())
-
                 progressDialog.dismiss()
             }
 

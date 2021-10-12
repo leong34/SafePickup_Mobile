@@ -1,4 +1,4 @@
-package com.example.safepickup.ui.dashboard
+package com.example.safepickup.ui.home
 
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
@@ -42,8 +42,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
-class DashboardFragment : Fragment() {
-    private var dashboardViewModel: DashboardViewModel? = null
+class HomeFragment : Fragment() {
+    private var homeViewModel: HomeViewModel? = null
     val noticeList: ArrayList<NoticeData> = ArrayList()
     val studentList: ArrayList<StudentData> = ArrayList()
     val student_ids:ArrayList<String> = ArrayList()
@@ -73,11 +73,11 @@ class DashboardFragment : Fragment() {
         text_time   = view.findViewById(R.id.text_time)
 
 
-        dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
-        text_date?.setText(dashboardViewModel!!.getDate())
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        text_date?.setText(homeViewModel!!.getDate())
         timeHandler.postDelayed(object : Runnable {
             override fun run() {
-                text_time?.setText(dashboardViewModel!!.getTime())
+                text_time?.setText(homeViewModel!!.getTime())
                 timeHandler.postDelayed(this, 1000)
             }
         }, 10)
@@ -318,6 +318,7 @@ class DashboardFragment : Fragment() {
                     startActivity(Utilities.logout(requireContext()))
                 }
                 reloadStudent()
+                Toast.makeText(requireContext(), studentsListRespond?.message, Toast.LENGTH_LONG).show()
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {

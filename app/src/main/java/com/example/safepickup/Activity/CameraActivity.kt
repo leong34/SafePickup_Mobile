@@ -161,15 +161,16 @@ class CameraActivity : AppCompatActivity() {
                 val insertImageRespond: InsertImageRespond? = response.body()
 
                 if (insertImageRespond?.authorized == true) {
+                    Log.d("Retrofit", insertImageRespond?.rekogMessage.toString())
+                    Log.d("Retrofit", insertImageRespond?.message.toString())
 
-                    deleteImage(fromFile)
-
-                    if (!insertImageRespond?.faceId.toString().isEmpty()) {
+                    if (insertImageRespond?.faceId.toString().isNotEmpty()) {
+                        deleteImage(fromFile)
                         startActivity(Utilities.intent_mainActivity(this@CameraActivity))
                         Utilities.setFaceId(this@CameraActivity, insertImageRespond?.faceId.toString())
                         finish()
                     } else {
-                        Toast.makeText(applicationContext, "Please try again, " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@CameraActivity, "Please try again, " + insertImageRespond?.rekogMessage.toString(), Toast.LENGTH_LONG).show()
                     }
                 } else {
                     startActivity(Utilities.logout(this@CameraActivity))
@@ -178,6 +179,7 @@ class CameraActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<InsertImageRespond?>, t: Throwable) {
                 progressDialog.dismiss()
+                Log.d("Retrofit", t.message!!)
             }
         })
     }
@@ -224,6 +226,8 @@ class CameraActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        val file = File(currentPhotoPath)
+        deleteImage(Uri.fromFile(file))
         Utilities.logout(this)
         finishAffinity()
     }
