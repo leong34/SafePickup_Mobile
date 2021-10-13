@@ -212,6 +212,9 @@ class SettingActivity : AppCompatActivity() {
                     setResult(RESULT_OK, Intent())
                     finish()
                 }
+                else{
+                    Toast.makeText(this@SettingActivity, "Aborted due to wrong old password", Toast.LENGTH_LONG).show()
+                }
             }
 
             override fun onFailure(call: Call<BasicRespond?>, t: Throwable) {
