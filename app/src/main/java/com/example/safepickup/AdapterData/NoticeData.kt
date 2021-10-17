@@ -15,5 +15,5 @@ class NoticeData: Comparable<NoticeData> {
         this.viewed = viewed
     }
 
-    override fun compareTo(other: NoticeData): Int = this.updated_at?.compareTo(other.updated_at!!)!!
+    override fun compareTo(other: NoticeData): Int = compareValuesBy(this, other, {it.updated_at}, {it.title})
 }

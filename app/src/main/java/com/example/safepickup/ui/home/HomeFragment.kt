@@ -220,6 +220,7 @@ class HomeFragment : Fragment() {
                 }
 
                 noticeList.sort()
+                noticeList.reverse()
 
                 noticeRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 noticeRecyclerView?.adapter = noticeAdapter

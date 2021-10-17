@@ -56,6 +56,7 @@ class FaceScanActivity : AppCompatActivity() {
         camera_button       = findViewById(R.id.camera_button)
         click_image_id      = findViewById(R.id.click_image)
         iv_confirm_image    = findViewById(R.id.iv_confirm_image)
+        currentPhotoPath    = ""
 
         camera_button.setOnClickListener { // Create the camera_intent ACTION_IMAGE_CAPTURE
             checkForCameraPermission()
@@ -122,8 +123,10 @@ class FaceScanActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val file = File(currentPhotoPath)
-        deleteImage(Uri.fromFile(file))
+        if(currentPhotoPath.isNotEmpty()) {
+            val file = File(currentPhotoPath)
+            deleteImage(Uri.fromFile(file))
+        }
     }
 
     private fun sendRequest(name: String, fromFile: Uri?, student_ids: ArrayList<String>) {

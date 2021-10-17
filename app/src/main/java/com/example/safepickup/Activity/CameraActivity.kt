@@ -71,6 +71,8 @@ class CameraActivity : AppCompatActivity() {
         setContentView(R.layout.activity_camera)
         supportActionBar?.hide()
 
+        currentPhotoPath = ""
+
         checkForCameraPermission()
 
         camera_open_id = findViewById(R.id.camera_button)
@@ -226,8 +228,10 @@ class CameraActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val file = File(currentPhotoPath)
-        deleteImage(Uri.fromFile(file))
+        if(currentPhotoPath.isNotEmpty()) {
+            val file = File(currentPhotoPath)
+            deleteImage(Uri.fromFile(file))
+        }
         Utilities.logout(this)
         finishAffinity()
     }
