@@ -50,7 +50,7 @@ class GuardianAdapter(private val guardianDataList: ArrayList<GuardianData>): Re
             holder.linear_student?.addView(tv1)
         }
 
-        if(guardianDataList[position].verified_at == "") holder.tv_verifiedAt?.text = "Unactivated" else holder.tv_verifiedAt?.text = "Activated"
+        if(guardianDataList[position].verified_at == "") holder.tv_verifiedAt?.text = "Inactivated" else holder.tv_verifiedAt?.text = "Activated"
 
         holder.itemView.setOnClickListener{
             guardianDataList[position].selected = guardianDataList[position].selected != true
